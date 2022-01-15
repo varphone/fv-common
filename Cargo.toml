@@ -11,4 +11,3 @@ gst = { version = "0.17", package = "gstreamer" }
 gst-base = { version = "0.17", package = "gstreamer-base" }
 gst-video = { version = "0.17", package = "gstreamer-video" }
 libc = "0.2"
-
