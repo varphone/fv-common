@@ -1,6 +1,6 @@
 use crate::Timestamp;
 use gst::Buffer;
-use gst_video::{VideoInfo, VideoMeta};
+use gst_video::VideoInfo;
 
 /// 一个表示视频帧的类型。
 #[derive(Debug, Clone)]
