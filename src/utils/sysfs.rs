@@ -1,6 +1,6 @@
+use std::ffi::CString;
 use std::fs::File;
 use std::io::{Read, Seek, SeekFrom, Write};
-use std::ffi::CString;
 
 /// 一个代表 Linux Sysfs 控制接口的契定。
 pub trait Sysfs: Read + Write + Seek {
