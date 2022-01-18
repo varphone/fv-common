@@ -1,5 +1,6 @@
 use std::fs::File;
 use std::io::{Read, Seek, SeekFrom, Write};
+use std::ffi::CString;
 
 /// 一个代表 Linux Sysfs 控制接口的契定。
 pub trait Sysfs: Read + Write + Seek {
@@ -27,8 +28,9 @@ pub trait Sysfs: Read + Write + Seek {
     }
 
     fn set_string<S: AsRef<str>>(&mut self, s: S) -> Result<(), std::io::Error> {
+        let cstr = CString::new(s.as_ref()).unwrap();
         self.seek(SeekFrom::Start(0)).unwrap();
-        self.write_all(s.as_ref().as_bytes())
+        self.write_all(cstr.as_bytes_with_nul())
     }
 
     fn set_isize(&mut self, val: isize) -> Result<(), std::io::Error> {
