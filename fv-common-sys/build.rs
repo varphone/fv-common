@@ -18,7 +18,7 @@ fn main() {
         .header("include/fv/dsp_protobuf.h")
         .header("include/fv/hi_type.h")
         .header("include/fv/log.h")
-        .header("include/fv/lsp3_common.h")
+        .header("include/fv/aol_common.h")
         .clang_arg("-Iinclude")
         // Tell cargo to invalidate the built crate whenever any of the
         // included header files changed.
