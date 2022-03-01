@@ -95,12 +95,13 @@ typedef struct {
 } lsp3_result1_s;
 
 typedef struct {
-  lsp3_result1_s *data;
+  lsp3_result1_s data[1920 * 4];
   int num;
 } edge_info_t;
 
 // 类型别名。
 typedef lsp3_config_s FvLsp3Config;
+typedef lsp3_result1_s FvLsp3Result1;
 typedef DYN_ROI_S FvDynRoi;
 typedef DSP_PROTOBUF_S FvProtoBuf;
 typedef RC_COOR_S FvRcCoord;
