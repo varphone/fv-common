@@ -1,12 +1,12 @@
 #ifndef FV_COMMON_FV_DSP_PROTOBUF_H
 #define FV_COMMON_FV_DSP_PROTOBUF_H
 
+#include <stdint.h>
+#include "hi_type.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdint.h>
-#include "hi_type.h"
 
 /*Image type*/
 typedef enum hiSVP_IMAGE_TYPE_E {
@@ -96,7 +96,6 @@ typedef struct {
 
 typedef struct {
   lsp3_result1_s data[1920 * 4];
-  int num;
 } edge_info_t;
 
 // 类型别名。
