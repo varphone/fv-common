@@ -11,16 +11,12 @@ pub struct Timestamp(u64);
 impl Timestamp {
     /// 返回当前世界时间的时戳。
     pub fn now_realtime() -> Self {
-        Self {
-            0: clock_gettime_micros(libc::CLOCK_REALTIME),
-        }
+        Self(clock_gettime_micros(libc::CLOCK_REALTIME))
     }
 
     /// 返回当前恒增时间的时戳。
     pub fn now_monotonic() -> Self {
-        Self {
-            0: clock_gettime_micros(libc::CLOCK_MONOTONIC),
-        }
+        Self(clock_gettime_micros(libc::CLOCK_MONOTONIC))
     }
 
     /// 返回此时戳包含的微秒数。
