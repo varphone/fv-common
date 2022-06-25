@@ -13,11 +13,11 @@ struct FvYoloObject
     /// 目标区域位置及大小，排布：XYWH，单位：像素。
     float bbox[4];
     /// 目标区域评分，范围 [0.0,1.0]。
-    float bbox_score;
+    float bboxScore;
     /// 目标分类编号。
-    int32_t cls_id;
+    int32_t clsId;
     /// 目标分类评分，范围 [0.0,1.0]。
-    float cls_score;
+    float clsScore;
 };
 
 /// 一个代表 Yolo 检测结果的类型。
@@ -32,7 +32,7 @@ struct FvYoloResult
     /// 数据对应的时戳。
     uint64_t pts;
     /// 检测到的目标数组指针（FvYoloObject*）。
-    uint64_t objects_ptr;
+    uint64_t objectsPtr;
 };
 
 // 类型别名。
