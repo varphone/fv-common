@@ -20,8 +20,6 @@ struct FvYoloObject
     float cls_score;
 };
 
-typedef struct FvYoloObject FvYoloObject;
-
 /// 一个代表 Yolo 检测结果的类型。
 struct FvYoloResult
 {
@@ -37,6 +35,8 @@ struct FvYoloResult
     uint64_t objects_ptr;
 };
 
+// 类型别名。
+typedef struct FvYoloObject FvYoloObject;
 typedef struct FvYoloResult FvYoloResult;
 
 #ifdef __cplusplus

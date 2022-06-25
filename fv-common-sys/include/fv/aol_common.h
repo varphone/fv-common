@@ -8,62 +8,66 @@
 extern "C" {
 #endif
 
-/* µ¥¸öµãÔÆµÄÊôĞÔ */
-typedef struct {
-  int16_t findOrNot;
-  int16_t r; // µãÔÆ×ø±ê
-  int32_t val; // ¼¤¹âÁÁ¶È
-  int16_t width; // ¿í¶È
-  int16_t notFindFactor; // Ã»ÓĞÕÒµ½µÄÔ­Òò
+/// ä¸€ä¸ªä»£è¡¨å•ä¸ªç‚¹çš„å±æ€§çš„ç±»å‹
+typedef struct
+{
+    int16_t findOrNot;
+    int16_t r;             // ç‚¹äº‘åæ ‡
+    int32_t val;           // æ¿€å…‰äº®åº¦
+    int16_t width;         // å®½åº¦
+    int16_t notFindFactor; // æ²¡æœ‰æ‰¾åˆ°çš„åŸå› 
 } LASER_POINT_S;
 
-/* µãÔÆ */
-typedef struct {
-  uint64_t pts;
-  LASER_POINT_S ptArr[3][1920 * 8];
+/// ä¸€ä¸ªä»£è¡¨ç‚¹äº‘çš„ç±»å‹
+typedef struct
+{
+    uint64_t pts;
+    LASER_POINT_S ptArr[3][1920 * 8];
 } POINT_CLOUD_S;
 
-typedef enum {
-  STEGER_LINE,
-  STEGER_LINE_GRAY_CENTROID,
-  EDGE,
-  CENTROID_HESSIAN,
-  SMALL_ORIGIN,
-  SUBPIXEL
+typedef enum
+{
+    STEGER_LINE,
+    STEGER_LINE_GRAY_CENTROID,
+    EDGE,
+    CENTROID_HESSIAN,
+    SMALL_ORIGIN,
+    SUBPIXEL
 } ALGO_TYPE_E;
 
-typedef struct {
-  char *dir[512];   /// Êı¾İÄ¿Â¼
-  int gray_thr;     /// »Ò¶ÈãĞÖµ
-  size_t rows;      /// Í¼ÏñĞĞÊı
-  size_t cols;      /// Í¼ÏñÁĞÊı
-  int rotation_90; /// Í¼ÏñÊÇ·ñ90¡ãµÄ
-  /**
-   * @brief Ëã·¨ÀàĞÍ
-   * @note  0 - stegerLine
-   *        1 - stegerLine & gray centroid
-   *        2 - edge
-   */
-  int method;
-  int debug;
-  /**
-   * @brief ÏÔÊ¾Ñ¡Ïî
-   * @note 0 - ÏÔÊ¾ËùÓĞ
-   *       1 - Ö»ÏÔÊ¾Í¼Ïñ
-   *       2 - Ö»ÏÔÊ¾µãÔÆ
-   */
-  int display;
-  int fit;
-  int filter;
-  double factor;
-  int startFrame;
-  int abs_diff; /// Ö¡²î·¨ãĞÖµ
-  int abs_diff_num;
-  int stegerThreshold;
-  int save;
-  int derThreshold; /// ±ßÔµ·¨Çóµ¼ãĞÖµ£¬±³¾°ºÍ¼¤¹âÏßµÄ»Ò¶È²î
-  int subPixelInterpolation; /// ÑÇÏñËØ²åÖµ
-  int roi; /// ÊÇ·ñÊ¹ÄÜroi
+typedef struct
+{
+    char* dir[512];  /// æ•°æ®ç›®å½•
+    int gray_thr;    /// ç°åº¦é˜ˆå€¼
+    size_t rows;     /// å›¾åƒè¡Œæ•°
+    size_t cols;     /// å›¾åƒåˆ—æ•°
+    int rotation_90; /// å›¾åƒæ˜¯å¦90Â°çš„
+    /**
+     * @brief ç®—æ³•ç±»å‹
+     * @note  0 - stegerLine
+     *        1 - stegerLine & gray centroid
+     *        2 - edge
+     */
+    int method;
+    int debug;
+    /**
+     * @brief æ˜¾ç¤ºé€‰é¡¹
+     * @note 0 - æ˜¾ç¤ºæ‰€æœ‰
+     *       1 - åªæ˜¾ç¤ºå›¾åƒ
+     *       2 - åªæ˜¾ç¤ºç‚¹äº‘
+     */
+    int display;
+    int fit;
+    int filter;
+    double factor;
+    int startFrame;
+    int abs_diff; /// å¸§å·®æ³•é˜ˆå€¼
+    int abs_diff_num;
+    int stegerThreshold;
+    int save;
+    int derThreshold; /// è¾¹ç¼˜æ³•æ±‚å¯¼é˜ˆå€¼ï¼ŒèƒŒæ™¯å’Œæ¿€å…‰çº¿çš„ç°åº¦å·®
+    int subPixelInterpolation; /// äºšåƒç´ æ’å€¼
+    int roi;                   /// æ˜¯å¦ä½¿èƒ½roi
 } simulated_config_t;
 
 typedef LASER_POINT_S FvLaserPoint;
