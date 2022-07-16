@@ -21,6 +21,10 @@ fn main() {
         .header("include/fv/aol_common.h")
         .header("include/fv/nn.h")
         .header("include/fv/laser_notify.h")
+        .default_enum_style(bindgen::EnumVariation::Rust {
+            non_exhaustive: false,
+        })
+        .anon_fields_prefix("un")
         .clang_arg("-Iinclude")
         // Tell cargo to invalidate the built crate whenever any of the
         // included header files changed.
