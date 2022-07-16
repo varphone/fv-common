@@ -20,6 +20,7 @@ fn main() {
         .header("include/fv/log.h")
         .header("include/fv/aol_common.h")
         .header("include/fv/nn.h")
+        .header("include/fv/laser_notify.h")
         .clang_arg("-Iinclude")
         // Tell cargo to invalidate the built crate whenever any of the
         // included header files changed.

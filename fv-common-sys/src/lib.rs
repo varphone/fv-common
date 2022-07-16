@@ -6,3 +6,15 @@
 #![allow(unaligned_references)]
 
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+
+impl Default for FvLaserNotify {
+    fn default() -> Self {
+        Self {
+            pts: 0,
+            category: 0,
+            level: 0,
+            msgId: 0,
+            extData: [0u8; 236],
+        }
+    }
+}
