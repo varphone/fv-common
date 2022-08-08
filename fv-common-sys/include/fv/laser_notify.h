@@ -14,6 +14,8 @@ enum FvLaserNotifyMsgId
     FV_LAS_MSG_OVERHEAT_RESUME,
     /// 传感器设备因过热保护而挂起。
     FV_LAS_MSG_OVERHEAT_SUSPEND,
+    /// 传感器任务号已经改变
+    FV_LAS_MSG_TASK_ID_CHANGED,
 };
 
 /// 一个代表激光跟踪器通知消息的类型。
