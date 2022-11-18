@@ -8,7 +8,7 @@ edition = "2021"
 [dependencies]
 chrono = "0.4"
 fv-common-sys = { path = "fv-common-sys" }
-gst = { version = "0.18", package = "gstreamer" }
-gst-base = { version = "0.18", package = "gstreamer-base" }
-gst-video = { version = "0.18", package = "gstreamer-video" }
+gst = { version = "0.19", package = "gstreamer" }
+gst-base = { version = "0.19", package = "gstreamer-base" }
+gst-video = { version = "0.19", package = "gstreamer-video" }
 libc = "0.2"
