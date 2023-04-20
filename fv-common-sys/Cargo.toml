@@ -2,6 +2,9 @@
 name = "fv-common-sys"
 version = "5.0.8+1"
 edition = "2021"
+description = "Full-V Common library FFI bindings for Rust"
+license = "Apache-2.0"
+authors = ["Varphone Wong <varphone@qq.com>"]
 links = "fv-common"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
