@@ -274,9 +274,9 @@ impl SeamParamsV0 {
 
     pub fn op_en_bits(&self) -> i64 {
         unsafe {
-            let mut bits = self.parts.sf[3].i32_val as i64;
+            let mut bits = self.parts.sf[4].i32_val as i64;
             bits <<= 30;
-            bits |= (self.parts.sf[4].i32_val & 0x3FFF_FFFF) as i64;
+            bits |= (self.parts.sf[3].i32_val & 0x3FFF_FFFF) as i64;
             bits
         }
     }
@@ -291,9 +291,9 @@ impl SeamParamsV0 {
 
     pub fn vp_en_bits(&self) -> i64 {
         unsafe {
-            let mut bits = self.parts.sf[5].i32_val as i64;
+            let mut bits = self.parts.sf[6].i32_val as i64;
             bits <<= 30;
-            bits |= (self.parts.sf[6].i32_val & 0x3FFF_FFFF) as i64;
+            bits |= (self.parts.sf[5].i32_val & 0x3FFF_FFFF) as i64;
             bits
         }
     }
@@ -308,9 +308,9 @@ impl SeamParamsV0 {
 
     pub fn oc_en_bits(&self) -> i64 {
         unsafe {
-            let mut bits = self.parts.sf[7].i32_val as i64;
+            let mut bits = self.parts.sf[8].i32_val as i64;
             bits <<= 30;
-            bits |= (self.parts.sf[8].i32_val & 0x3FFF_FFFF) as i64;
+            bits |= (self.parts.sf[7].i32_val & 0x3FFF_FFFF) as i64;
             bits
         }
     }
@@ -749,6 +749,15 @@ pub unsafe extern "C" fn fv_spm_set_cur_profile_ptr(_sp: *mut FvSeamProfile) -> 
 pub unsafe extern "C" fn fv_spr_v0(spr: *mut FvSeamProfile) -> *mut FvSeamParamsV0 {
     assert!(!spr.is_null());
     let spr = &mut *spr;
+    spr.v0
+}
+
+/// 返回当前生效的 FvSeamParamsV0 参数。
+/// # Safety
+#[no_mangle]
+pub unsafe extern "C" fn fv_spa_v0_cur() -> *mut FvSeamParamsV0 {
+    let spr = fv_spm_cur_profile();
+    let spr: &mut SeamProfileFFI = &mut *spr;
     spr.v0
 }
 

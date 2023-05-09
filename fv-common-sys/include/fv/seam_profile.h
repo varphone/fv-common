@@ -1,11 +1,52 @@
 #ifndef FV_COMMON_SEAM_PROFILE_H
 #define FV_COMMON_SEAM_PROFILE_H
 
-#include <cstdint>
 #include <stdint.h>
+#ifdef __cplusplus
+#include <array>
+#include <cstdint>
+#endif
+
+/// Examples
+/// ```c++
+/// auto const& v0 = FvSeamParamsV0::current();
+/// // 以平面空间索引访问
+/// int algo = v0[FV_SPA_F_XP_EXTRACTOIN_ALGO];
+/// // 以成员变量方式访问
+/// float angle1 = v0.parts.kp[FV_SPA_KP_ANGLE1];
+/// // 以分区索引函数访问
+/// float length1 = v0.kp(FV_SPA_KP_LENGTH1);
+/// // 以分区值表索引访问
+/// float width = v0.kp()[FV_SPA_KP_WIDTH1];
+/// // 检测参数是否启用
+/// if (v0.opEn(FV_SPA_OP_DIRECTION)) {
+///     // TODO
+/// }
+/// ```
 
 // Generic
 //============================================================================
+
+// 前置声明
+union FvSeamParamValue;
+typedef union FvSeamParamValue FvSeamParamValue;
+
+struct FvSeamParamsPartsV0;
+typedef struct FvSeamParamsPartsV0 FvSeamParamsPartsV0;
+
+union FvSeamParamsV0;
+typedef union FvSeamParamsV0 FvSeamParamsV0;
+
+struct FvSeamProfile;
+typedef struct FvSeamProfile FvSeamProfile;
+
+#define FV_SPA_V0_XP_NUM 30
+#define FV_SPA_V0_KP_NUM 30
+#define FV_SPA_V0_OP_NUM 60
+#define FV_SPA_V0_VP_NUM 60
+#define FV_SPA_V0_OC_NUM 60
+#define FV_SPA_V0_SF_NUM 10
+
 /// 一个代表接头识别参数平面空间编号的枚举。
 typedef enum FvSeamParamFlatId
 {
@@ -202,49 +243,6 @@ typedef enum FvSeamParamSfId
     FV_SPA_SF_VERSION,
 } FvSeamParamSfId;
 
-/// 一个代表接头识别参数值的类型。
-typedef union FvSeamParamValue
-{
-    /// 32 位浮点数值。
-    float f32;
-    /// 32 位整型数值。
-    int32_t i32;
-} FvSeamParamValue;
-
-/// 一个代表接头识别参数分区表的类型。
-typedef struct FvSeamParamsPartsV0
-{
-    FvSeamParamValue xp[30];
-    FvSeamParamValue kp[30];
-    FvSeamParamValue op[60];
-    FvSeamParamValue vp[60];
-    FvSeamParamValue oc[60];
-    FvSeamParamValue sf[10];
-} FvSeamParamsPartsV0;
-
-/// 一个代表接头识别参数表的类型。
-typedef union FvSeamParamsV0
-{
-    /// 分区形式参数表。
-    FvSeamParamsPartsV0 parts;
-    /// 平面形式参数表。
-    FvSeamParamValue values[250];
-} FvSeamParamsV0;
-
-/// 一个代表接头识别参数配置的类型。
-typedef struct FvSeamProfile
-{
-    /// 是否启用。
-    int32_t enabled;
-    /// 配置编号。
-    int32_t id;
-    /// 元数据。
-    void* meta;
-    /// V0 版参数表指针。
-    union FvSeamParamsV0* v0;
-    // TODO：后续扩展参数以 v1, v2 形式增加。
-} FvSeamProfile;
-
 // C API
 //============================================================================
 #ifdef __cplusplus
@@ -276,6 +274,9 @@ void fv_spm_set_cur_profile_ptr(FvSeamProfile* sp);
 
 /// 返回 FvSeamProfile 中的 FvSeamParamsV0 参数。
 FvSeamParamsV0* fv_spr_v0(FvSeamProfile* sp);
+
+/// 返回当前生效的 FvSeamParamsV0 参数。
+FvSeamParamsV0* fv_spa_v0_cur(void);
 
 /// 返回 FvSeamParamsV0 平面空间中指定寄存器的 32 位浮点参数值。
 float fv_spa_v0_f32(FvSeamParamsV0* sp, int32_t index);
@@ -364,6 +365,360 @@ int32_t fv_spa_v0_version(FvSeamParamsV0* sp);
 #ifdef __cplusplus
 }
 #endif // __cplusplus
+
+/// 一个代表接头识别参数值的类型。
+union FvSeamParamValue
+{
+    /// 32 位浮点数值。
+    float f32;
+    /// 32 位整型数值。
+    int32_t i32;
+
+#ifdef __cplusplus
+    /// 赋予 float 型值。
+    float& operator=(const float& other)
+    {
+        f32 = other;
+        return *this;
+    }
+
+    /// 赋予 double 型值（会裁减为 float 保存）。
+    float& operator=(const double& other)
+    {
+        f32 = other;
+        return *this;
+    }
+
+    /// 赋予 int16_t 型值（会提升为 int32_t 保存）。
+    int32_t& operator=(const int16_t& other)
+    {
+        i32 = other;
+        return *this;
+    }
+
+    /// 赋予 uint16_t 型值（会作为 int32_t 保存）。
+    int32_t& operator=(const uint16_t& other)
+    {
+        i32 = other;
+        return *this;
+    }
+
+    /// 赋予 int32_t 型值。
+    int32_t& operator=(const int32_t& other)
+    {
+        i32 = other;
+        return *this;
+    }
+
+    /// 赋予 uint32_t 型值。
+    int32_t& operator=(const uint32_t& other)
+    {
+        i32 = other;
+        return *this;
+    }
+
+    /// 赋予 int64_t 型值（会裁减为 int32_t 保存）。
+    int32_t& operator=(const int64_t& other)
+    {
+        i32 = other;
+        return *this;
+    }
+
+    /// 赋予 uint64_t 型值（会裁减为 int32_t 保存）。
+    int32_t& operator=(const uint64_t& other)
+    {
+        i32 = other;
+        return *this;
+    }
+
+    /// 返回 float 型值。
+    operator float() const
+    {
+        return f32;
+    }
+
+    /// 返回 float 型值可变引用。
+    operator float&()
+    {
+        return f32;
+    }
+
+    /// 返回 int32_t 型值。
+    operator int32_t() const
+    {
+        return i32;
+    }
+
+    /// 返回 int32_t 型值可变引用。
+    operator int32_t&()
+    {
+        return i32;
+    }
+#endif // __cplusplus
+};
+
+/// 一个代表接头识别参数分区表的类型。
+struct FvSeamParamsPartsV0
+{
+    FvSeamParamValue xp[FV_SPA_V0_XP_NUM];
+    FvSeamParamValue kp[FV_SPA_V0_KP_NUM];
+    FvSeamParamValue op[FV_SPA_V0_OP_NUM];
+    FvSeamParamValue vp[FV_SPA_V0_VP_NUM];
+    FvSeamParamValue oc[FV_SPA_V0_OC_NUM];
+    FvSeamParamValue sf[FV_SPA_V0_SF_NUM];
+};
+
+/// 一个代表接头识别参数表的类型。
+union FvSeamParamsV0
+{
+    /// 分区形式参数表。
+    FvSeamParamsPartsV0 parts;
+    /// 平面形式参数表。
+    FvSeamParamValue values[250];
+
+#ifdef __cplusplus
+    /// 返回当前 V0 参数引用。
+    static FvSeamParamsV0& current()
+    {
+        return *fv_spa_v0_cur();
+    }
+
+    /// 返回平面空间参数值常量引用。
+    const FvSeamParamValue& operator[](const int32_t index) const
+    {
+        return values[index];
+    }
+
+    /// 返回平面空间参数值可变引用。
+    FvSeamParamValue& operator[](const int32_t index)
+    {
+        return values[index];
+    }
+
+    /// 返回 XP 区参数表常量引用。
+    const std::array<FvSeamParamValue, FV_SPA_V0_XP_NUM>& xp() const
+    {
+        return reinterpret_cast<
+            const std::array<FvSeamParamValue, FV_SPA_V0_XP_NUM>&>(parts.xp);
+    }
+
+    /// 返回 XP 区参数表可变引用。
+    std::array<FvSeamParamValue, FV_SPA_V0_XP_NUM>& xp()
+    {
+        return reinterpret_cast<
+            std::array<FvSeamParamValue, FV_SPA_V0_XP_NUM>&>(parts.xp);
+    }
+
+    const FvSeamParamValue& xp(int32_t index) const
+    {
+        return parts.xp[index];
+    }
+
+    FvSeamParamValue& xp(int32_t index)
+    {
+        return parts.xp[index];
+    }
+
+    /// 返回 KP 区参数表常量引用。
+    const std::array<FvSeamParamValue, FV_SPA_V0_KP_NUM>& kp() const
+    {
+        return reinterpret_cast<
+            const std::array<FvSeamParamValue, FV_SPA_V0_KP_NUM>&>(parts.kp);
+    }
+
+    /// 返回 KP 区参数表可变引用。
+    std::array<FvSeamParamValue, FV_SPA_V0_KP_NUM>& kp()
+    {
+        return reinterpret_cast<
+            std::array<FvSeamParamValue, FV_SPA_V0_KP_NUM>&>(parts.kp);
+    }
+
+    const FvSeamParamValue& kp(int32_t index) const
+    {
+        return parts.kp[index];
+    }
+
+    FvSeamParamValue& kp(int32_t index)
+    {
+        return parts.kp[index];
+    }
+
+    /// 返回 OP 区参数表常量引用。
+    const std::array<FvSeamParamValue, FV_SPA_V0_OP_NUM>& op() const
+    {
+        return reinterpret_cast<
+            const std::array<FvSeamParamValue, FV_SPA_V0_OP_NUM>&>(parts.op);
+    }
+
+    /// 返回 OP 区参数表可变引用。
+    std::array<FvSeamParamValue, FV_SPA_V0_OP_NUM>& op()
+    {
+        return reinterpret_cast<
+            std::array<FvSeamParamValue, FV_SPA_V0_OP_NUM>&>(parts.op);
+    }
+
+    const FvSeamParamValue& op(int32_t index) const
+    {
+        return parts.op[index];
+    }
+
+    FvSeamParamValue& op(int32_t index)
+    {
+        return parts.op[index];
+    }
+
+    /// 返回 VP 区参数表常量引用。
+    const std::array<FvSeamParamValue, FV_SPA_V0_VP_NUM>& vp() const
+    {
+        return reinterpret_cast<
+            const std::array<FvSeamParamValue, FV_SPA_V0_VP_NUM>&>(parts.vp);
+    }
+
+    /// 返回 VP 区参数表可变引用。
+    std::array<FvSeamParamValue, FV_SPA_V0_VP_NUM>& vp()
+    {
+        return reinterpret_cast<
+            std::array<FvSeamParamValue, FV_SPA_V0_VP_NUM>&>(parts.vp);
+    }
+
+    const FvSeamParamValue& vp(int32_t index) const
+    {
+        return parts.vp[index];
+    }
+
+    FvSeamParamValue& vp(int32_t index)
+    {
+        return parts.vp[index];
+    }
+
+    /// 返回 OC 区参数表常量引用。
+    const std::array<FvSeamParamValue, FV_SPA_V0_OC_NUM>& oc() const
+    {
+        return reinterpret_cast<
+            const std::array<FvSeamParamValue, FV_SPA_V0_OC_NUM>&>(parts.oc);
+    }
+
+    /// 返回 OC 区参数表可变引用。
+    std::array<FvSeamParamValue, FV_SPA_V0_OC_NUM>& oc()
+    {
+        return reinterpret_cast<
+            std::array<FvSeamParamValue, FV_SPA_V0_OC_NUM>&>(parts.oc);
+    }
+
+    const FvSeamParamValue& oc(int32_t index) const
+    {
+        return parts.oc[index];
+    }
+
+    FvSeamParamValue& oc(int32_t index)
+    {
+        return parts.oc[index];
+    }
+
+    /// 返回 SF 区参数表常量引用。
+    const std::array<FvSeamParamValue, FV_SPA_V0_SF_NUM>& sf() const
+    {
+        return reinterpret_cast<
+            const std::array<FvSeamParamValue, FV_SPA_V0_SF_NUM>&>(parts.sf);
+    }
+
+    /// 返回 SF 区参数表可变引用。
+    std::array<FvSeamParamValue, FV_SPA_V0_SF_NUM>& sf()
+    {
+        return reinterpret_cast<
+            std::array<FvSeamParamValue, FV_SPA_V0_SF_NUM>&>(parts.sf);
+    }
+
+    const FvSeamParamValue& sf(int32_t index) const
+    {
+        return parts.sf[index];
+    }
+
+    FvSeamParamValue& sf(int32_t index)
+    {
+        return parts.sf[index];
+    }
+
+    bool xpEn(int32_t index)
+    {
+        return (parts.sf[FV_SPA_SF_XP_EN].i32 & (1 << index));
+    }
+
+    bool kpEn(int32_t index)
+    {
+        return (parts.sf[FV_SPA_SF_KP_EN].i32 & (1 << index));
+    }
+
+    bool opEn(int32_t index)
+    {
+        int64_t mask = parts.sf[FV_SPA_SF_OP_EN2].i32;
+        mask <<= 30;
+        mask |= parts.sf[FV_SPA_SF_OP_EN1].i32 & 0x3fffffff;
+        return (mask & (1 << index));
+    }
+
+    bool vpEn(int32_t index)
+    {
+        int64_t mask = parts.sf[FV_SPA_SF_VP_EN2].i32;
+        mask <<= 30;
+        mask |= parts.sf[FV_SPA_SF_VP_EN1].i32 & 0x3fffffff;
+        return (mask & (1 << index));
+    }
+
+    bool ocEn(int32_t index)
+    {
+        int64_t mask = parts.sf[FV_SPA_SF_OC_EN2].i32;
+        mask <<= 30;
+        mask |= parts.sf[FV_SPA_SF_OC_EN1].i32 & 0x3fffffff;
+        return (mask & (1 << index));
+    }
+
+    /// 返回接头形式值。
+    int32_t jointType() const
+    {
+        return parts.sf[0].i32 & 0xffff;
+    }
+
+    /// 返回接头主要形式值。
+    int32_t jointTypeMajor() const
+    {
+        return (parts.sf[0].i32 >> 8) & 0xff;
+    }
+
+    /// 返回接头次要形式值。
+    int32_t jointTypeMinor() const
+    {
+        return parts.sf[0].i32 & 0xff;
+    }
+
+    /// 返回版本号。
+    int32_t version() const
+    {
+        return parts.sf[9].i32 & 0xffff;
+    }
+#endif // __cplusplus
+};
+
+/// 一个代表接头识别参数配置的类型。
+struct FvSeamProfile
+{
+    /// 是否启用。
+    int32_t enabled;
+    /// 配置编号。
+    int32_t id;
+    /// 元数据。
+    void* meta;
+    /// V0 版参数表指针。
+    FvSeamParamsV0* v0;
+    // TODO：后续扩展参数以 v1, v2 形式增加。
+
+#ifdef __cplusplus
+    FvSeamProfile* current()
+    {
+        return fv_spm_cur_profile();
+    }
+#endif // __cplusplus
+};
 
 // C++ API
 //============================================================================
