@@ -267,100 +267,146 @@ int32_t fv_spm_load_profile(int32_t id);
 int32_t fv_spm_switch_profile(int32_t id);
 
 /// 设置当前生效的接头识别参数配置（以复制方式）。
-void fv_spm_fill_cur_profile(const FvSeamProfile* sp);
+/// @param spr 接头识别参数配置指针。
+void fv_spm_fill_cur_profile(const FvSeamProfile* spr);
 
 /// 设置当前生效的接头识别参数配置（以非复制方式）。
-void fv_spm_set_cur_profile_ptr(FvSeamProfile* sp);
+/// @param spr 接头识别参数配置指针。
+void fv_spm_set_cur_profile_ptr(FvSeamProfile* spr);
 
 /// 返回 FvSeamProfile 中的 FvSeamParamsV0 参数。
-FvSeamParamsV0* fv_spr_v0(FvSeamProfile* sp);
+/// @param spr 接头识别参数配置指针，@see fv_spm_cur_profile()。
+FvSeamParamsV0* fv_spr_v0(FvSeamProfile* spr);
 
 /// 返回当前生效的 FvSeamParamsV0 参数。
 FvSeamParamsV0* fv_spa_v0_cur(void);
 
 /// 返回 FvSeamParamsV0 平面空间中指定寄存器的 32 位浮点参数值。
-float fv_spa_v0_f32(FvSeamParamsV0* sp, int32_t index);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+/// @param index 寄存器编号，@see FvSeamParamFlatId。
+float fv_spa_v0_f32(FvSeamParamsV0* spa, int32_t index);
 
 /// 返回 FvSeamParamsV0 平面空间中指定寄存器的 32 位整型参数值。
-int32_t fv_spa_v0_i32(FvSeamParamsV0* sp, int32_t index);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+/// @param index 寄存器编号，@see FvSeamParamFlatId。
+int32_t fv_spa_v0_i32(FvSeamParamsV0* spa, int32_t index);
 
 /// 返回 FvSeamParamsV0 中的 XP 值表。
-FvSeamParamValue* fv_spa_v0_xpv(FvSeamParamsV0* sp);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+FvSeamParamValue* fv_spa_v0_xpv(FvSeamParamsV0* spa);
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位浮点参数 XP 值。
-float fv_spa_v0_xp_f32(FvSeamParamsV0* sp, int32_t index);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+/// @param index 寄存器编号，@see FvSeamParamXpId。
+float fv_spa_v0_xp_f32(FvSeamParamsV0* spa, int32_t index);
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位整型参数 XP 值。
-int32_t fv_spa_v0_xp_i32(FvSeamParamsV0* sp, int32_t index);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+/// @param index 寄存器编号，@see FvSeamParamXpId。
+int32_t fv_spa_v0_xp_i32(FvSeamParamsV0* spa, int32_t index);
 
 /// 返回 FvSeamParamsV0 中的 KP 值表。
-FvSeamParamValue* fv_spa_v0_kpv(FvSeamParamsV0* sp);
+FvSeamParamValue* fv_spa_v0_kpv(FvSeamParamsV0* spa);
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位浮点参数 KP 值。
-float fv_spa_v0_kp_f32(FvSeamParamsV0* sp, int32_t index);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+/// @param index 寄存器编号，@see FvSeamParamKpId。
+float fv_spa_v0_kp_f32(FvSeamParamsV0* spa, int32_t index);
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位整型参数 KP 值。
-int32_t fv_spa_v0_kp_i32(FvSeamParamsV0* sp, int32_t index);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+/// @param index 寄存器编号，@see FvSeamParamKpId。
+int32_t fv_spa_v0_kp_i32(FvSeamParamsV0* spa, int32_t index);
 
 /// 返回 FvSeamParamsV0 中的 OP 值表。
-FvSeamParamValue* fv_spa_v0_opv(FvSeamParamsV0* sp);
+FvSeamParamValue* fv_spa_v0_opv(FvSeamParamsV0* spa);
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位浮点参数 OP 值。
-float fv_spa_v0_op_f32(FvSeamParamsV0* sp, int32_t index);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+/// @param index 寄存器编号，@see FvSeamParamOpId。
+float fv_spa_v0_op_f32(FvSeamParamsV0* spa, int32_t index);
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位整型参数 OP 值。
-int32_t fv_spa_v0_op_i32(FvSeamParamsV0* sp, int32_t index);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+/// @param index 寄存器编号，@see FvSeamParamOpId。
+int32_t fv_spa_v0_op_i32(FvSeamParamsV0* spa, int32_t index);
 
 /// 返回 FvSeamParamsV0 中的 VP 值表。
-FvSeamParamValue* fv_spa_v0_vpv(FvSeamParamsV0* sp);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+FvSeamParamValue* fv_spa_v0_vpv(FvSeamParamsV0* spa);
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位浮点参数 VP 值。
-float fv_spa_v0_vp_f32(FvSeamParamsV0* sp, int32_t index);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+/// @param index 寄存器编号，@see FvSeamParamVpId。
+float fv_spa_v0_vp_f32(FvSeamParamsV0* spa, int32_t index);
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位整型参数 VP 值。
-int32_t fv_spa_v0_vp_i32(FvSeamParamsV0* sp, int32_t index);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+/// @param index 寄存器编号，@see FvSeamParamVpId。
+int32_t fv_spa_v0_vp_i32(FvSeamParamsV0* spa, int32_t index);
 
 /// 返回 FvSeamParamsV0 中的 OC 值表。
-FvSeamParamValue* fv_spa_v0_ocv(FvSeamParamsV0* sp);
+FvSeamParamValue* fv_spa_v0_ocv(FvSeamParamsV0* spa);
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位浮点参数 OC 值。
-float fv_spa_v0_oc_f32(FvSeamParamsV0* sp, int32_t index);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+/// @param index 寄存器编号，@see FvSeamParamOcId。
+float fv_spa_v0_oc_f32(FvSeamParamsV0* spa, int32_t index);
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位整型参数 OC 值。
-int32_t fv_spa_v0_oc_i32(FvSeamParamsV0* sp, int32_t index);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+/// @param index 寄存器编号，@see FvSeamParamOcId。
+int32_t fv_spa_v0_oc_i32(FvSeamParamsV0* spa, int32_t index);
 
 /// 返回 FvSeamParamsV0 中的 SF 值表。
-FvSeamParamValue* fv_spa_v0_sfv(FvSeamParamsV0* sp);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+FvSeamParamValue* fv_spa_v0_sfv(FvSeamParamsV0* spa);
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位浮点参数 SF 值。
-float fv_spa_v0_sf_f32(FvSeamParamsV0* sp, int32_t index);
+/// @param index 寄存器编号，@see FvSeamParamSfId。
+float fv_spa_v0_sf_f32(FvSeamParamsV0* spa, int32_t index);
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位整型参数 SF 值。
-int32_t fv_spa_v0_sf_i32(FvSeamParamsV0* sp, int32_t index);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+/// @param index 寄存器编号，@see FvSeamParamSfId。
+int32_t fv_spa_v0_sf_i32(FvSeamParamsV0* spa, int32_t index);
 
 /// 返回 FvSeamParamsV0 中的指定索引的 XP 参数开关。
-int32_t fv_spa_v0_xp_en(FvSeamParamsV0* sp, int32_t index);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+/// @param index 寄存器编号，@see FvSeamParamXpId。
+int32_t fv_spa_v0_xp_en(FvSeamParamsV0* spa, int32_t index);
 
 /// 返回 FvSeamParamsV0 中的指定索引的 KP 参数开关。
-int32_t fv_spa_v0_kp_en(FvSeamParamsV0* sp, int32_t index);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+/// @param index 寄存器编号，@see FvSeamParamKpId。
+int32_t fv_spa_v0_kp_en(FvSeamParamsV0* spa, int32_t index);
 
 /// 返回 FvSeamParamsV0 中的指定索引的 OP 参数开关。
-int32_t fv_spa_v0_op_en(FvSeamParamsV0* sp, int32_t index);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+/// @param index 寄存器编号，@see FvSeamParamOpId。
+int32_t fv_spa_v0_op_en(FvSeamParamsV0* spa, int32_t index);
 
 /// 返回 FvSeamParamsV0 中的指定索引的 VP 参数开关。
-int32_t fv_spa_v0_vp_en(FvSeamParamsV0* sp, int32_t index);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+/// @param index 寄存器编号，@see FvSeamParamVpId。
+int32_t fv_spa_v0_vp_en(FvSeamParamsV0* spa, int32_t index);
 
 /// 返回 FvSeamParamsV0 中的指定索引的 OC 参数开关。
-int32_t fv_spa_v0_oc_en(FvSeamParamsV0* sp, int32_t index);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+/// @param index 寄存器编号，@see FvSeamParamOcId。
+int32_t fv_spa_v0_oc_en(FvSeamParamsV0* spa, int32_t index);
 
 /// 返回 FvSeamParamsV0 中的主要接头形式值。
-int32_t fv_spa_v0_jtma(FvSeamParamsV0* sp);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+int32_t fv_spa_v0_jtma(FvSeamParamsV0* spa);
 
 /// 返回 FvSeamParamsV0 中的次要接头形式值。
-int32_t fv_spa_v0_jtmi(FvSeamParamsV0* sp);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+int32_t fv_spa_v0_jtmi(FvSeamParamsV0* spa);
 
 /// 返回 FvSeamParamsV0 中的版本值。
-int32_t fv_spa_v0_version(FvSeamParamsV0* sp);
+/// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
+int32_t fv_spa_v0_version(FvSeamParamsV0* spa);
 
 #ifdef __cplusplus
 }
