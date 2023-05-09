@@ -6,6 +6,13 @@ use std::fmt::{self, Debug};
 use std::io::Write;
 use std::sync::{Arc, Mutex};
 
+pub const SEAM_PROFILE_SCHEMA: &str = "https://full-v.com/schemas/seam-profile.json";
+pub const SEAM_PROFILES_SCHEMA: &str = "https://full-v.com/schemas/seam-profiles.json";
+pub const SEAM_PROFILES_META_ONLY_SCHEMA: &str =
+    "https://full-v.com/schemas/seam-profiles-meta-only.json";
+
+const DEFAULT_CONFIG_DIR: &str = "/var/lib/rklaser/profiles";
+
 pub enum SeamProfileError {
     Io(std::io::Error),
     Json(serde_json::Error),
@@ -323,6 +330,10 @@ impl SeamParamsV0 {
         }
     }
 
+    pub fn as_bytes(&self) -> &[u8] {
+        unsafe { std::mem::transmute::<&[SeamParamValue; 250], &[u8; 250 * 4]>(&self.values) }
+    }
+
     pub fn merge(&mut self, other: &Self) {
         let dst: &mut [i32] = self.as_mut();
         let src: &[i32] = other.as_ref();
@@ -382,6 +393,8 @@ impl SeamProfileMeta {
 #[derive(Default, Debug, Serialize, Deserialize)]
 #[repr(C)]
 pub struct SeamProfile {
+    /// 档案规范。
+    pub schema: String,
     /// 是否启用。
     pub enabled: bool,
     /// 配置编号。
@@ -396,6 +409,7 @@ pub struct SeamProfile {
 impl SeamProfile {
     pub fn new(enabled: bool, id: i32) -> Self {
         Self {
+            schema: SEAM_PROFILE_SCHEMA.into(),
             enabled,
             id,
             meta: Default::default(),
@@ -498,20 +512,22 @@ pub type FvSeamParamsPartsV0 = SeamParamsPartsV0;
 pub type FvSeamParamsV0 = SeamParamsV0;
 pub type FvSeamProfile = SeamProfileFFI;
 
-pub struct SeamProfileManger {
+pub struct SeamProfileManager {
+    pub config_dir: String,
     pub profiles: Vec<Box<SeamProfile>>,
     pub profiles_ffi: Vec<SeamProfileFFI>,
     pub current_index: usize,
 }
 
-unsafe impl Send for SeamProfileManger {}
-unsafe impl Sync for SeamProfileManger {}
+unsafe impl Send for SeamProfileManager {}
+unsafe impl Sync for SeamProfileManager {}
 
-static mut SEAM_PROFILE_MANAGER: Option<Arc<Mutex<SeamProfileManger>>> = None;
+static mut SEAM_PROFILE_MANAGER: Option<Arc<Mutex<SeamProfileManager>>> = None;
 
-impl SeamProfileManger {
-    pub fn new() -> Self {
-        std::fs::create_dir_all("/tmp/rklaser/profiles").unwrap();
+impl SeamProfileManager {
+    pub fn new<S: Into<String>>(config_dir: S) -> Self {
+        let config_dir: String = config_dir.into();
+        std::fs::create_dir_all(&config_dir).unwrap();
         let mut profiles = Vec::with_capacity(256);
         let mut profiles_ffi = Vec::with_capacity(256);
         for i in 0..256 {
@@ -526,6 +542,7 @@ impl SeamProfileManger {
             profiles_ffi.push(profile_ffi);
         }
         Self {
+            config_dir,
             profiles,
             profiles_ffi,
             current_index: 0,
@@ -538,7 +555,9 @@ impl SeamProfileManger {
         static START: Once = Once::new();
 
         START.call_once(|| unsafe {
-            SEAM_PROFILE_MANAGER = Some(Arc::new(Mutex::new(SeamProfileManger::new())));
+            SEAM_PROFILE_MANAGER = Some(Arc::new(Mutex::new(SeamProfileManager::new(
+                DEFAULT_CONFIG_DIR,
+            ))));
         });
 
         unsafe { SEAM_PROFILE_MANAGER.as_ref() }
@@ -573,7 +592,41 @@ impl SeamProfileManger {
     }
 
     pub fn set_current_profile_id(&mut self, index: usize) {
-        self.current_index = index;
+        if index < self.profiles.len() {
+            self.current_index = index;
+        }
+    }
+
+    pub fn disable_profile(&mut self, id: usize) {
+        if id < self.profiles.len() {
+            self.profiles[id].enabled = false;
+            self.profiles_ffi[id].enabled = 0;
+        }
+    }
+
+    pub fn enable_profile(&mut self, id: usize) {
+        if id < self.profiles.len() {
+            self.profiles[id].enabled = true;
+            self.profiles_ffi[id].enabled = 1;
+        }
+    }
+
+    pub fn disable_all_profiles(&mut self) {
+        for p in &mut self.profiles {
+            p.set_enabled(false);
+        }
+        for p in &mut self.profiles_ffi {
+            p.enabled = 0;
+        }
+    }
+
+    pub fn enable_all_profiles(&mut self) {
+        for p in &mut self.profiles {
+            p.set_enabled(true);
+        }
+        for p in &mut self.profiles_ffi {
+            p.enabled = 1;
+        }
     }
 
     pub fn get_profile(&self, id: usize) -> &SeamProfile {
@@ -584,37 +637,87 @@ impl SeamProfileManger {
         &mut self.profiles[id]
     }
 
+    pub fn load_profile_from_json_str(&mut self, json: &str) -> serde_json::Result<()> {
+        let p = serde_json::from_str::<SeamProfile>(json)?;
+        let n = self.profiles.len() as i32;
+        if p.id >= 0 && p.id < n {
+            self.get_profile_mut(p.id as usize).merge(&p);
+        }
+        Ok(())
+    }
+
+    pub fn load_profiles_from_json_str(&mut self, json: &str) -> serde_json::Result<()> {
+        let info = serde_json::from_str::<SeamProfilesInfo>(json)?;
+        let n = self.profiles.len() as i32;
+        for p in &info.profiles {
+            if p.id >= 0 && p.id < n {
+                self.get_profile_mut(p.id as usize).merge(p);
+            }
+        }
+        Ok(())
+    }
+
     pub fn load_profile(&mut self, id: usize) -> Result<SeamProfile, SeamProfileError> {
-        let path = format!("/tmp/rklaser/profiles/seam-profile-{}.json", id);
+        let path = format!("{}/seam-profile-{}.json", self.config_dir, id);
         let text = std::fs::read_to_string(path)?;
         Ok(serde_json::from_str::<SeamProfile>(&text)?)
     }
 
-    pub fn load_all(&mut self) {
-        for i in 0..256 {
+    pub fn load_all_profiles(&mut self) {
+        let n = self.profiles.len();
+        for i in 0..n {
             if let Ok(profile) = self.load_profile(i) {
                 self.get_profile_mut(i).merge(&profile);
+            } else {
+                let _r = self.save_profile(i);
             }
         }
     }
 
     pub fn save_profile(&self, id: usize) -> Result<(), SeamProfileError> {
-        let path = format!("/tmp/rklaser/profiles/seam-profile-{}.json", id);
+        let path = format!("{}/seam-profile-{}.json", self.config_dir, id);
         let text = serde_json::to_string(self.get_profile(id))?;
         Ok(std::fs::write(path, text)?)
     }
 
-    pub fn save_all(&self) {
-        for i in 0..256 {
+    pub fn save_all_profiles(&self) {
+        let n = self.profiles.len();
+        for i in 0..n {
             if self.save_profile(i).is_ok() {
                 // TODO:
             }
         }
     }
 
+    pub fn dump_profiles_string(&self, id: Option<i32>) -> String {
+        let profiles = self
+            .profiles
+            .iter()
+            .filter(|p| p.is_enabled() && id.map_or(true, |y| p.id() == y))
+            .collect::<Vec<&Box<SeamProfile>>>();
+        let jx = serde_json::json!({
+            "schema": SEAM_PROFILES_SCHEMA,
+            "profiles": profiles,
+        });
+        serde_json::to_string(&jx).unwrap_or_default()
+    }
+
+    pub fn dump_profiles_writer<W: Write>(&self, id: Option<i32>, w: W) -> serde_json::Result<()> {
+        let profiles = self
+            .profiles
+            .iter()
+            .filter(|p| p.is_enabled() && id.map_or(true, |y| p.id() == y))
+            .collect::<Vec<&Box<SeamProfile>>>();
+        let jx = serde_json::json!({
+            "schema": SEAM_PROFILES_SCHEMA,
+            "profiles": profiles,
+        });
+        serde_json::to_writer(w, &jx)
+    }
+
     pub fn to_json_string(&self) -> String {
         let jx = serde_json::json!({
-            "schema": "https://full-v.com/schemas/seam-profiles.json",
+            "schema": SEAM_PROFILES_SCHEMA,
             "profiles": &self.profiles[..],
         });
         serde_json::to_string(&jx).unwrap_or_default()
@@ -622,34 +725,58 @@ impl SeamProfileManger {
 
     pub fn to_json_writer<W: Write>(&self, w: W) -> serde_json::Result<()> {
         let jx = serde_json::json!({
-            "schema": "https://full-v.com/schemas/seam-profiles.json",
+            "schema": SEAM_PROFILES_SCHEMA,
             "profiles": &self.profiles[..],
         });
         serde_json::to_writer(w, &jx)
     }
 
     /// 转化为简化的接头识别配置档案信息列表。
-    pub fn to_seam_profiles_meta_only(&self) -> SeamProfilesMetaOnly<'_> {
+    pub fn dump_profiles_meta_only_string<W: Write>(&self, id: Option<i32>) -> String {
         let profiles = self
             .profiles
             .iter()
-            .filter(|x| x.is_enabled())
-            .map(|x| SeamProfileMetaOnly {
-                enabled: x.is_enabled(),
-                id: x.id(),
-                meta: x.meta(),
+            .filter(|p| p.is_enabled() && id.map_or(true, |i| p.id() == i))
+            .map(|p| SeamProfileMetaOnly {
+                enabled: p.is_enabled(),
+                id: p.id(),
+                meta: p.meta(),
             })
             .collect();
-        SeamProfilesMetaOnly {
-            schema: "https://full-v.com/schemas/seam-profiles-meta-only.json".into(),
+        let jx = SeamProfilesMetaOnly {
+            schema: SEAM_PROFILES_META_ONLY_SCHEMA.into(),
             profiles,
-        }
+        };
+        serde_json::to_string(&jx).unwrap_or_default()
+    }
+
+    /// 转化为简化的接头识别配置档案信息列表。
+    pub fn dump_profiles_meta_only_writer<W: Write>(
+        &self,
+        id: Option<i32>,
+        w: W,
+    ) -> serde_json::Result<()> {
+        let profiles = self
+            .profiles
+            .iter()
+            .filter(|p| p.is_enabled() && id.map_or(true, |i| p.id() == i))
+            .map(|p| SeamProfileMetaOnly {
+                enabled: p.is_enabled(),
+                id: p.id(),
+                meta: p.meta(),
+            })
+            .collect();
+        let jx = SeamProfilesMetaOnly {
+            schema: SEAM_PROFILES_META_ONLY_SCHEMA.into(),
+            profiles,
+        };
+        serde_json::to_writer(w, &jx)
     }
 }
 
-impl Default for SeamProfileManger {
+impl Default for SeamProfileManager {
     fn default() -> Self {
-        Self::new()
+        Self::new(DEFAULT_CONFIG_DIR)
     }
 }
 
@@ -661,6 +788,15 @@ pub struct SeamProfileMetaOnly<'r> {
     pub id: i32,
     /// 配置名称。
     pub meta: &'r SeamProfileMeta,
+}
+
+/// 一个代表接头识别配置档案信息列表的类型。
+#[derive(Default, Debug, Serialize, Deserialize)]
+pub struct SeamProfilesInfo {
+    ///  数据规范。
+    pub schema: String,
+    /// 简化的接头识别配置档案信息列表。
+    pub profiles: Vec<SeamProfile>,
 }
 
 /// 一个代表简化的接头识别配置档案信息列表的类型。
@@ -943,9 +1079,9 @@ mod tests {
 
     #[test]
     fn test_seam_profile_manager() {
-        let mut mgr = SeamProfileManger::new();
-        mgr.load_all();
-        mgr.save_all();
+        let mut mgr = SeamProfileManager::new(DEFAULT_CONFIG_DIR);
+        mgr.load_all_profiles();
+        mgr.save_all_profiles();
     }
 
     #[test]
