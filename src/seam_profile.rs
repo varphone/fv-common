@@ -394,6 +394,7 @@ impl SeamProfileMeta {
 #[repr(C)]
 pub struct SeamProfile {
     /// 档案规范。
+    #[serde(default)]
     pub schema: String,
     /// 是否启用。
     pub enabled: bool,
