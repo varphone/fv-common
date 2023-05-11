@@ -40,12 +40,44 @@ pub union SeamParamValue {
     pub i32_val: i32,
 }
 
+impl PartialEq for SeamParamValue {
+    fn eq(&self, other: &Self) -> bool {
+        unsafe { self.i32_val == other.i32_val }
+    }
+}
+
+impl Eq for SeamParamValue {}
+
+impl From<i32> for SeamParamValue {
+    fn from(value: i32) -> Self {
+        Self { i32_val: value }
+    }
+}
+
+impl From<f32> for SeamParamValue {
+    fn from(value: f32) -> Self {
+        Self { f32_val: value }
+    }
+}
+
+impl From<SeamParamValue> for i32 {
+    fn from(value: SeamParamValue) -> Self {
+        unsafe { value.i32_val }
+    }
+}
+
+impl From<SeamParamValue> for f32 {
+    fn from(value: SeamParamValue) -> Self {
+        unsafe { value.f32_val }
+    }
+}
+
 impl Debug for SeamParamValue {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         unsafe {
             write!(
                 f,
-                "0x{:08X} / {} / {}",
+                "0x{:08X}|{}|{:.6}",
                 self.i32_val as u32, self.i32_val, self.f32_val
             )
         }
@@ -55,6 +87,36 @@ impl Debug for SeamParamValue {
 impl Default for SeamParamValue {
     fn default() -> Self {
         Self { i32_val: 0 }
+    }
+}
+
+impl Serialize for SeamParamValue {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        unsafe { serializer.serialize_i32(self.i32_val) }
+    }
+}
+
+impl<'de> Deserialize<'de> for SeamParamValue {
+    fn deserialize<D>(deserializer: D) -> Result<SeamParamValue, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        i32::deserialize(deserializer).map(|v| SeamParamValue { i32_val: v })
+    }
+}
+
+impl SeamParamValue {
+    #[allow(dead_code)]
+    pub fn from_i32(value: i32) -> Self {
+        Self { i32_val: value }
+    }
+
+    #[allow(dead_code)]
+    pub fn from_f32(value: f32) -> Self {
+        Self { f32_val: value }
     }
 }
 
@@ -1093,5 +1155,16 @@ mod tests {
         }
         "#;
         let _v0: SeamParamsV0 = serde_json::from_str(s).unwrap();
+    }
+
+    #[test]
+    fn test_seam_param_value_de() {
+        let r = serde_json::from_str::<Vec<SeamParamValue>>(r#"[1,2,3,4]"#);
+        assert!(r.is_ok());
+        assert_eq!(r.unwrap(), vec![1.into(), 2.into(), 3.into(), 4.into()]);
+        let v: Vec<SeamParamValue> = vec![123.into(), 456.into(), 789.into(), 123456789.into()];
+        let s = serde_json::to_string(&v);
+        assert!(s.is_ok());
+        assert_eq!(&s.unwrap(), "[123,456,789,123456789]");
     }
 }
