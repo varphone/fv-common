@@ -192,6 +192,10 @@ typedef enum FvSeamParamKpId
     FV_SPA_KP_WIDTH2,
     FV_SPA_KP_THICKNESS1,
     FV_SPA_KP_THICKNESS2,
+    FV_SPA_KP_GAP1,
+    FV_SPA_KP_GAP2,
+    FV_SPA_KP_DROP1,
+    FV_SPA_KP_DROP2,
 } FvSeamParamKpId;
 
 /// 一个代表接头识别参数 OP 区编号的枚举。
