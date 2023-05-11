@@ -281,8 +281,20 @@ impl SeamParamsV0 {
         unsafe { self.values[index].f32_val }
     }
 
+    pub fn set_value_f32(&mut self, index: usize, value: f32) {
+        unsafe {
+            self.values[index].f32_val = value;
+        }
+    }
+
     pub fn value_i32(&self, index: usize) -> i32 {
         unsafe { self.values[index].i32_val }
+    }
+
+    pub fn set_value_i32(&mut self, index: usize, value: i32) {
+        unsafe {
+            self.values[index].i32_val = value;
+        }
     }
 
     pub fn xp_f32(&self, index: usize) -> f32 {
@@ -432,8 +444,8 @@ impl SeamProfileMeta {
         }
     }
 
-    pub fn name(&self) -> String {
-        self.name.clone()
+    pub fn name(&self) -> &str {
+        &self.name
     }
 
     pub fn set_name<S: Into<String>>(&mut self, name: S) {
@@ -528,7 +540,7 @@ impl SeamProfile {
         &mut self.v0 as *mut SeamParamsV0
     }
 
-    pub fn name(&self) -> String {
+    pub fn name(&self) -> &str {
         self.meta().name()
     }
 
@@ -580,6 +592,9 @@ pub struct SeamProfileManager {
     pub profiles: Vec<Box<SeamProfile>>,
     pub profiles_ffi: Vec<SeamProfileFFI>,
     pub current_index: usize,
+    pub profile_switched: bool,
+    pub profile_updated: bool,
+    pub profiles_changed: bool,
 }
 
 unsafe impl Send for SeamProfileManager {}
@@ -609,6 +624,9 @@ impl SeamProfileManager {
             profiles,
             profiles_ffi,
             current_index: 0,
+            profile_switched: false,
+            profile_updated: false,
+            profiles_changed: false,
         }
     }
 
@@ -655,15 +673,54 @@ impl SeamProfileManager {
     }
 
     pub fn set_current_profile_id(&mut self, index: usize) {
-        if index < self.profiles.len() {
+        if index < self.profiles.len() && self.current_index != index {
             self.current_index = index;
+            self.profile_switched = true;
         }
+    }
+
+    pub fn current_profile_name(&self) -> &str {
+        self.current_profile().name()
+    }
+
+    pub fn set_current_profile_name<S: Into<String>>(&mut self, name: S) {
+        let name: String = name.into();
+        if name != self.current_profile_name() {
+            self.current_profile_mut().set_name(name);
+            self.profile_updated = true;
+            self.profiles_changed = true;
+        }
+    }
+
+    pub fn is_profile_switched(&self) -> bool {
+        self.profile_switched
+    }
+
+    pub fn set_profile_switched(&mut self, yes: bool) {
+        self.profile_switched = yes;
+    }
+
+    pub fn is_profile_updated(&self) -> bool {
+        self.profile_updated
+    }
+
+    pub fn set_profile_updated(&mut self, yes: bool) {
+        self.profile_updated = yes;
+    }
+
+    pub fn is_profiles_changed(&self) -> bool {
+        self.profiles_changed
+    }
+
+    pub fn set_profiles_changed(&mut self, yes: bool) {
+        self.profiles_changed = yes;
     }
 
     pub fn disable_profile(&mut self, id: usize) {
         if id < self.profiles.len() {
             self.profiles[id].enabled = false;
             self.profiles_ffi[id].enabled = 0;
+            self.profiles_changed = true;
         }
     }
 
@@ -671,6 +728,7 @@ impl SeamProfileManager {
         if id < self.profiles.len() {
             self.profiles[id].enabled = true;
             self.profiles_ffi[id].enabled = 1;
+            self.profiles_changed = true;
         }
     }
 
@@ -681,6 +739,7 @@ impl SeamProfileManager {
         for p in &mut self.profiles_ffi {
             p.enabled = 0;
         }
+        self.profiles_changed = true;
     }
 
     pub fn enable_all_profiles(&mut self) {
@@ -690,6 +749,7 @@ impl SeamProfileManager {
         for p in &mut self.profiles_ffi {
             p.enabled = 1;
         }
+        self.profiles_changed = true;
     }
 
     pub fn get_profile(&self, id: usize) -> &SeamProfile {
@@ -701,10 +761,13 @@ impl SeamProfileManager {
     }
 
     pub fn load_profile_from_json_str(&mut self, json: &str) -> serde_json::Result<()> {
-        let p = serde_json::from_str::<SeamProfile>(json)?;
+        let dst = serde_json::from_str::<SeamProfile>(json)?;
         let n = self.profiles.len() as i32;
-        if p.id >= 0 && p.id < n {
-            self.get_profile_mut(p.id as usize).merge(&p);
+        if dst.id >= 0 && dst.id < n {
+            let src = &mut self.profiles[dst.id as usize];
+            src.merge(&dst);
+            self.profile_updated = true;
+            self.profiles_changed = true;
         }
         Ok(())
     }
@@ -712,9 +775,12 @@ impl SeamProfileManager {
     pub fn load_profiles_from_json_str(&mut self, json: &str) -> serde_json::Result<()> {
         let info = serde_json::from_str::<SeamProfilesInfo>(json)?;
         let n = self.profiles.len() as i32;
-        for p in &info.profiles {
-            if p.id >= 0 && p.id < n {
-                self.get_profile_mut(p.id as usize).merge(p);
+        for dst in &info.profiles {
+            if dst.id >= 0 && dst.id < n {
+                let src = &mut self.profiles[dst.id as usize];
+                src.merge(dst);
+                self.profile_updated = true;
+                self.profiles_changed = true;
             }
         }
         Ok(())
@@ -834,6 +900,48 @@ impl SeamProfileManager {
             profiles,
         };
         serde_json::to_writer(w, &jx)
+    }
+
+    pub fn cur_v0(&self) -> &SeamParamsV0 {
+        self.current_profile().v0()
+    }
+
+    pub fn cur_v0_mut(&mut self) -> &mut SeamParamsV0 {
+        self.current_profile_mut().v0_mut()
+    }
+
+    pub fn cur_v0_value_f32(&self, index: usize) -> f32 {
+        if index < 250 {
+            self.current_profile().v0().value_f32(index)
+        } else {
+            0.0
+        }
+    }
+
+    pub fn set_cur_v0_value_f32(&mut self, index: usize, value: f32) {
+        if index < 250 {
+            self.current_profile_mut()
+                .v0_mut()
+                .set_value_f32(index, value);
+            self.profile_updated = true;
+        }
+    }
+
+    pub fn cur_v0_value_i32(&self, index: usize) -> i32 {
+        if index < 250 {
+            self.current_profile().v0().value_i32(index)
+        } else {
+            0
+        }
+    }
+
+    pub fn set_cur_v0_value_i32(&mut self, index: usize, value: i32) {
+        if index < 250 {
+            self.current_profile_mut()
+                .v0_mut()
+                .set_value_i32(index, value);
+            self.profile_updated = true;
+        }
     }
 }
 
