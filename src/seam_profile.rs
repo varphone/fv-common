@@ -13,6 +13,750 @@ pub const SEAM_PROFILES_META_ONLY_SCHEMA: &str =
 
 const DEFAULT_CONFIG_DIR: &str = "/var/lib/rklaser/profiles";
 
+/// 一个代表接头识别参数平面空间编号的枚举。
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[repr(i32)]
+pub enum SeamParamFlatId {
+    // XP 区
+    XpExposureControl = 0,
+    XpExposureFramerate,
+    XpExposureRsv,
+    XpExposureTime,
+    XpLaserControl,
+    XpLaserStrength,
+    XpLampControl,
+    XpLampPower,
+    XpExtractionAlgo,
+    XpLumaThresh,
+    XpScanMode,
+    XpFilterTime,
+    XpRoiX,
+    XpRoiY,
+    XpRoiW,
+    XpRoiH,
+    Xp16,
+    Xp17,
+    Xp18,
+    Xp19,
+    Xp20,
+    Xp21,
+    Xp22,
+    Xp23,
+    Xp24,
+    Xp25,
+    Xp26,
+    Xp27,
+    Xp28,
+    Xp29,
+    // KP 区
+    KpAngle1 = 30,
+    KpAngle2,
+    KpLength1,
+    KpLength2,
+    KpWidth1,
+    KpWidth2,
+    KpThickness1,
+    KpThickness2,
+    KpGap1,
+    KpGap2,
+    KpDrop1,
+    KpDrop2,
+    Kp12,
+    Kp13,
+    Kp14,
+    Kp15,
+    Kp16,
+    Kp17,
+    Kp18,
+    Kp19,
+    Kp20,
+    Kp21,
+    Kp22,
+    Kp23,
+    Kp24,
+    Kp25,
+    Kp26,
+    Kp27,
+    Kp28,
+    Kp29,
+    // OP 区
+    OpDetectMethod = 60,
+    OpDirection,
+    OpCornerType,
+    OpLayerSelect,
+    OpGapPos,
+    OpGapType,
+    OpBevelAngle1,
+    OpBevelAngle2,
+    OpNormalType1,
+    OpNormalType2,
+    Op10,
+    Op11,
+    Op12,
+    Op13,
+    Op14,
+    Op15,
+    Op16,
+    Op17,
+    Op18,
+    Op19,
+    Op20,
+    Op21,
+    Op22,
+    Op23,
+    Op24,
+    Op25,
+    Op26,
+    Op27,
+    Op28,
+    Op29,
+    Op30,
+    Op31,
+    Op32,
+    Op33,
+    Op34,
+    Op35,
+    Op36,
+    Op37,
+    Op38,
+    Op39,
+    Op40,
+    Op41,
+    Op42,
+    Op43,
+    Op44,
+    Op45,
+    Op46,
+    Op47,
+    Op48,
+    Op49,
+    Op50,
+    Op51,
+    Op52,
+    Op53,
+    Op54,
+    Op55,
+    Op56,
+    Op57,
+    Op58,
+    Op59,
+    // VP 区
+    VpAngleMin = 120,
+    VpAngleMax,
+    VpGapMin,
+    VpGapMax,
+    VpDropMin,
+    VpDropMax,
+    VpGrooveAreaMin,
+    VpGrooveAreaMax,
+    VpGrooveAreaPos,
+    VpGrooveAreaType,
+    VpWidth1Min,
+    VpWidth1Max,
+    VpWidth2Min,
+    VpWidth2Max,
+    VpWidth3Min,
+    VpWidth3Max,
+    VpWidth4Min,
+    VpWidth4Max,
+    VpWeldedAngleMin,
+    VpWeldedAngleMax,
+    VpWeldedAreaMin,
+    VpWeldedAreaMax,
+    VpWeldedLengthMin,
+    VpWeldedLengthMax,
+    VpWeldedThicknessMin,
+    VpWeldedThicknessMax,
+    VpWeldedWidthMin,
+    VpWeldedWidthMax,
+    VpWeldedDetection,
+    VpWeldedRsv,
+    VpNormalAngleMin,
+    VpNormalAngleMax,
+    Vp32,
+    Vp33,
+    Vp34,
+    Vp35,
+    Vp36,
+    Vp37,
+    Vp38,
+    Vp39,
+    Vp40,
+    Vp41,
+    Vp42,
+    Vp43,
+    Vp44,
+    Vp45,
+    Vp46,
+    Vp47,
+    VpL1A = 168,
+    VpL1APlus,
+    VpL1Length,
+    VpL2A,
+    VpL2APlus,
+    VpL2Length,
+    VpL3A,
+    VpL3APlus,
+    VpL3Length,
+    VpL4A,
+    VpL4APlus,
+    VpL4Length,
+    // OC 区
+    OcFeaturePoint = 180,
+    OcFilterStrength,
+    OcBasePosY,
+    OcBasePosZ,
+    OcBaseDeltaY,
+    OcBaseDeltaZ,
+    OcOffsetY,
+    OcOffsetZ,
+    OcStartPointFilter,
+    OcTrackingArea,
+    OcTrackingStrength,
+    OcTrackingDuration,
+    Oc12,
+    Oc13,
+    Oc14,
+    Oc15,
+    Oc16,
+    Oc17,
+    Oc18,
+    Oc19,
+    Oc20,
+    Oc21,
+    Oc22,
+    Oc23,
+    Oc24,
+    Oc25,
+    Oc26,
+    Oc27,
+    Oc28,
+    Oc29,
+    Oc30,
+    Oc31,
+    Oc32,
+    Oc33,
+    Oc34,
+    Oc35,
+    Oc36,
+    Oc37,
+    Oc38,
+    Oc39,
+    Oc40,
+    Oc41,
+    Oc42,
+    Oc43,
+    Oc44,
+    Oc45,
+    Oc46,
+    Oc47,
+    Oc48,
+    Oc49,
+    Oc50,
+    Oc51,
+    Oc52,
+    Oc53,
+    Oc54,
+    Oc55,
+    Oc56,
+    Oc57,
+    Oc58,
+    Oc59,
+    // SF 区
+    SfJointType = 240,
+    SfXpEn,
+    SfKpEn,
+    SfOpEn1,
+    SfOpEn2,
+    SfVpEn1,
+    SfVpEn2,
+    SfOcEn1,
+    SfOcEn2,
+    SfVersion,
+    //
+    Invalid = 0xffff,
+}
+
+impl From<usize> for SeamParamFlatId {
+    fn from(value: usize) -> Self {
+        if value < 250 {
+            SeamParamFlatId::from(value as i32)
+        } else {
+            SeamParamFlatId::Invalid
+        }
+    }
+}
+
+impl From<i32> for SeamParamFlatId {
+    fn from(value: i32) -> Self {
+        if (0..250).contains(&value) {
+            unsafe { std::mem::transmute::<i32, SeamParamFlatId>(value) }
+        } else {
+            SeamParamFlatId::Invalid
+        }
+    }
+}
+
+impl SeamParamFlatId {
+    pub fn is_valid(self) -> bool {
+        (self as usize) < 250
+    }
+}
+
+/// 一个代表接头识别参数 XP 分区编号的枚举。
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[repr(i32)]
+pub enum SeamParamXpId {
+    ExposureControl = 0,
+    ExposureFramerate,
+    ExposureRsv,
+    ExposureTime,
+    LaserControl,
+    LaserStrength,
+    LampControl,
+    LampPower,
+    ExtractionAlgo,
+    LumaThresh,
+    ScanMode,
+    FilterTime,
+    RoiX,
+    RoiY,
+    RoiW,
+    RoiH,
+    Xp16,
+    Xp17,
+    Xp18,
+    Xp19,
+    Xp20,
+    Xp21,
+    Xp22,
+    Xp23,
+    Xp24,
+    Xp25,
+    Xp26,
+    Xp27,
+    Xp28,
+    Xp29,
+    //
+    Invalid = 0xffff,
+}
+
+impl From<usize> for SeamParamXpId {
+    fn from(value: usize) -> Self {
+        if value < 30 {
+            SeamParamXpId::from(value as i32)
+        } else {
+            SeamParamXpId::Invalid
+        }
+    }
+}
+
+impl From<i32> for SeamParamXpId {
+    fn from(value: i32) -> Self {
+        if (0..30).contains(&value) {
+            unsafe { std::mem::transmute::<i32, SeamParamXpId>(value) }
+        } else {
+            SeamParamXpId::Invalid
+        }
+    }
+}
+
+impl SeamParamXpId {
+    pub fn is_valid(self) -> bool {
+        (self as usize) < 30
+    }
+}
+
+/// 一个代表接头识别参数 KP 分区编号的枚举。
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[repr(i32)]
+pub enum SeamParamKpId {
+    Angle1 = 0,
+    Angle2,
+    Length1,
+    Length2,
+    Width1,
+    Width2,
+    Thickness1,
+    Thickness2,
+    Gap1,
+    Gap2,
+    Drop1,
+    Drop2,
+    Kp12,
+    Kp13,
+    Kp14,
+    Kp15,
+    Kp16,
+    Kp17,
+    Kp18,
+    Kp19,
+    Kp20,
+    Kp21,
+    Kp22,
+    Kp23,
+    Kp24,
+    Kp25,
+    Kp26,
+    Kp27,
+    Kp28,
+    Kp29,
+    //
+    Invalid = 0xffff,
+}
+
+impl From<usize> for SeamParamKpId {
+    fn from(value: usize) -> Self {
+        if value < 30 {
+            SeamParamKpId::from(value as i32)
+        } else {
+            SeamParamKpId::Invalid
+        }
+    }
+}
+
+impl From<i32> for SeamParamKpId {
+    fn from(value: i32) -> Self {
+        if (0..30).contains(&value) {
+            unsafe { std::mem::transmute::<i32, SeamParamKpId>(value) }
+        } else {
+            SeamParamKpId::Invalid
+        }
+    }
+}
+
+impl SeamParamKpId {
+    pub fn is_valid(self) -> bool {
+        (self as usize) < 30
+    }
+}
+
+/// 一个代表接头识别参数 OP 分区编号的枚举。
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[repr(i32)]
+pub enum SeamParamOpId {
+    DetectMethod = 0,
+    Direction,
+    CornerType,
+    LayerSelect,
+    GapPos,
+    GapType,
+    BevelAngle1,
+    BevelAngle2,
+    NormalType1,
+    NormalType2,
+    Op10,
+    Op11,
+    Op12,
+    Op13,
+    Op14,
+    Op15,
+    Op16,
+    Op17,
+    Op18,
+    Op19,
+    Op20,
+    Op21,
+    Op22,
+    Op23,
+    Op24,
+    Op25,
+    Op26,
+    Op27,
+    Op28,
+    Op29,
+    Op30,
+    Op31,
+    Op32,
+    Op33,
+    Op34,
+    Op35,
+    Op36,
+    Op37,
+    Op38,
+    Op39,
+    Op40,
+    Op41,
+    Op42,
+    Op43,
+    Op44,
+    Op45,
+    Op46,
+    Op47,
+    Op48,
+    Op49,
+    Op50,
+    Op51,
+    Op52,
+    Op53,
+    Op54,
+    Op55,
+    Op56,
+    Op57,
+    Op58,
+    Op59,
+    //
+    Invalid = 0xffff,
+}
+
+impl From<usize> for SeamParamOpId {
+    fn from(value: usize) -> Self {
+        if value < 60 {
+            SeamParamOpId::from(value as i32)
+        } else {
+            SeamParamOpId::Invalid
+        }
+    }
+}
+
+impl From<i32> for SeamParamOpId {
+    fn from(value: i32) -> Self {
+        if (0..60).contains(&value) {
+            unsafe { std::mem::transmute::<i32, SeamParamOpId>(value) }
+        } else {
+            SeamParamOpId::Invalid
+        }
+    }
+}
+
+impl SeamParamOpId {
+    pub fn is_valid(self) -> bool {
+        (self as usize) < 60
+    }
+}
+
+/// 一个代表接头识别参数 VP 分区编号的枚举。
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[repr(i32)]
+pub enum SeamParamVpId {
+    AngleMin = 120,
+    AngleMax,
+    GapMin,
+    GapMax,
+    DropMin,
+    DropMax,
+    GrooveAreaMin,
+    GrooveAreaMax,
+    GrooveAreaPos,
+    GrooveAreaType,
+    Width1Min,
+    Width1Max,
+    Width2Min,
+    Width2Max,
+    Width3Min,
+    Width3Max,
+    Width4Min,
+    Width4Max,
+    WeldedAngleMin,
+    WeldedAngleMax,
+    WeldedAreaMin,
+    WeldedAreaMax,
+    WeldedLengthMin,
+    WeldedLengthMax,
+    WeldedThicknessMin,
+    WeldedThicknessMax,
+    WeldedWidthMin,
+    WeldedWidthMax,
+    WeldedDetection,
+    WeldedRsv,
+    NormalAngleMin,
+    NormalAngleMax,
+    Vp32,
+    Vp33,
+    Vp34,
+    Vp35,
+    Vp36,
+    Vp37,
+    Vp38,
+    Vp39,
+    Vp40,
+    Vp41,
+    Vp42,
+    Vp43,
+    Vp44,
+    Vp45,
+    Vp46,
+    Vp47,
+    L1A = 168,
+    L1APlus,
+    L1Length,
+    L2A,
+    L2APlus,
+    L2Length,
+    L3A,
+    L3APlus,
+    L3Length,
+    L4A,
+    L4APlus,
+    L4Length,
+    //
+    Invalid = 0xffff,
+}
+
+impl From<usize> for SeamParamVpId {
+    fn from(value: usize) -> Self {
+        if value < 60 {
+            SeamParamVpId::from(value as i32)
+        } else {
+            SeamParamVpId::Invalid
+        }
+    }
+}
+
+impl From<i32> for SeamParamVpId {
+    fn from(value: i32) -> Self {
+        if (0..60).contains(&value) {
+            unsafe { std::mem::transmute::<i32, SeamParamVpId>(value) }
+        } else {
+            SeamParamVpId::Invalid
+        }
+    }
+}
+
+impl SeamParamVpId {
+    pub fn is_valid(self) -> bool {
+        (self as usize) < 60
+    }
+}
+
+/// 一个代表接头识别参数 OC 分区编号的枚举。
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[repr(i32)]
+pub enum SeamParamOcId {
+    FeaturePoint = 0,
+    FilterStrength,
+    BasePosY,
+    BasePosZ,
+    BaseDeltaY,
+    BaseDeltaZ,
+    OffsetY,
+    OffsetZ,
+    StartPointFilter,
+    TrackingArea,
+    TrackingStrength,
+    TrackingDuration,
+    Oc12,
+    Oc13,
+    Oc14,
+    Oc15,
+    Oc16,
+    Oc17,
+    Oc18,
+    Oc19,
+    Oc20,
+    Oc21,
+    Oc22,
+    Oc23,
+    Oc24,
+    Oc25,
+    Oc26,
+    Oc27,
+    Oc28,
+    Oc29,
+    Oc30,
+    Oc31,
+    Oc32,
+    Oc33,
+    Oc34,
+    Oc35,
+    Oc36,
+    Oc37,
+    Oc38,
+    Oc39,
+    Oc40,
+    Oc41,
+    Oc42,
+    Oc43,
+    Oc44,
+    Oc45,
+    Oc46,
+    Oc47,
+    Oc48,
+    Oc49,
+    Oc50,
+    Oc51,
+    Oc52,
+    Oc53,
+    Oc54,
+    Oc55,
+    Oc56,
+    Oc57,
+    Oc58,
+    Oc59,
+    //
+    Invalid = 0xffff,
+}
+
+impl From<usize> for SeamParamOcId {
+    fn from(value: usize) -> Self {
+        if value < 60 {
+            SeamParamOcId::from(value as i32)
+        } else {
+            SeamParamOcId::Invalid
+        }
+    }
+}
+
+impl From<i32> for SeamParamOcId {
+    fn from(value: i32) -> Self {
+        if (0..60).contains(&value) {
+            unsafe { std::mem::transmute::<i32, SeamParamOcId>(value) }
+        } else {
+            SeamParamOcId::Invalid
+        }
+    }
+}
+
+impl SeamParamOcId {
+    pub fn is_valid(self) -> bool {
+        (self as usize) < 60
+    }
+}
+
+/// 一个代表接头识别参数 SF 分区编号的枚举。
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[repr(i32)]
+pub enum SeamParamSfId {
+    JointType = 0,
+    XpEn,
+    KpEn,
+    OpEn1,
+    OpEn2,
+    VpEn1,
+    VpEn2,
+    OcEn1,
+    OcEn2,
+    Version,
+    //
+    Invalid = 0xffff,
+}
+
+impl From<usize> for SeamParamSfId {
+    fn from(value: usize) -> Self {
+        if value < 10 {
+            SeamParamSfId::from(value as i32)
+        } else {
+            SeamParamSfId::Invalid
+        }
+    }
+}
+
+impl From<i32> for SeamParamSfId {
+    fn from(value: i32) -> Self {
+        if (0..10).contains(&value) {
+            unsafe { std::mem::transmute::<i32, SeamParamSfId>(value) }
+        } else {
+            SeamParamSfId::Invalid
+        }
+    }
+}
+
+impl SeamParamSfId {
+    pub fn is_valid(self) -> bool {
+        (self as usize) < 10
+    }
+}
+
 pub enum SeamProfileError {
     Io(std::io::Error),
     Json(serde_json::Error),
@@ -277,80 +1021,148 @@ impl SeamParamsV0 {
         unsafe { self.parts.sf[9].i32_val & 0xffff }
     }
 
-    pub fn value_f32(&self, index: usize) -> f32 {
-        unsafe { self.values[index].f32_val }
-    }
-
-    pub fn set_value_f32(&mut self, index: usize, value: f32) {
-        unsafe {
-            self.values[index].f32_val = value;
+    pub fn value_f32(&self, index: SeamParamFlatId) -> f32 {
+        if index.is_valid() {
+            unsafe { self.values[index as usize].f32_val }
+        } else {
+            0.0f32
         }
     }
 
-    pub fn value_i32(&self, index: usize) -> i32 {
-        unsafe { self.values[index].i32_val }
-    }
-
-    pub fn set_value_i32(&mut self, index: usize, value: i32) {
-        unsafe {
-            self.values[index].i32_val = value;
+    pub fn set_value_f32(&mut self, index: SeamParamFlatId, value: f32) {
+        if index.is_valid() {
+            unsafe {
+                self.values[index as usize].f32_val = value;
+            }
         }
     }
 
-    pub fn xp_f32(&self, index: usize) -> f32 {
-        unsafe { self.parts.xp[index].f32_val }
+    pub fn value_i32(&self, index: SeamParamFlatId) -> i32 {
+        if index.is_valid() {
+            unsafe { self.values[index as usize].i32_val }
+        } else {
+            0
+        }
     }
 
-    pub fn xp_i32(&self, index: usize) -> i32 {
-        unsafe { self.parts.xp[index].i32_val }
+    pub fn set_value_i32(&mut self, index: SeamParamFlatId, value: i32) {
+        if index.is_valid() {
+            unsafe {
+                self.values[index as usize].i32_val = value;
+            }
+        }
     }
 
-    pub fn kp_f32(&self, index: usize) -> f32 {
-        unsafe { self.parts.kp[index].f32_val }
+    pub fn xp_f32(&self, index: SeamParamXpId) -> f32 {
+        if index.is_valid() {
+            unsafe { self.parts.xp[index as usize].f32_val }
+        } else {
+            0.0
+        }
     }
 
-    pub fn kp_i32(&self, index: usize) -> i32 {
-        unsafe { self.parts.kp[index].i32_val }
+    pub fn xp_i32(&self, index: SeamParamXpId) -> i32 {
+        if index.is_valid() {
+            unsafe { self.parts.xp[index as usize].i32_val }
+        } else {
+            0
+        }
     }
 
-    pub fn op_f32(&self, index: usize) -> f32 {
-        unsafe { self.parts.op[index].f32_val }
+    pub fn kp_f32(&self, index: SeamParamKpId) -> f32 {
+        if index.is_valid() {
+            unsafe { self.parts.kp[index as usize].f32_val }
+        } else {
+            0.0
+        }
     }
 
-    pub fn op_i32(&self, index: usize) -> i32 {
-        unsafe { self.parts.op[index].i32_val }
+    pub fn kp_i32(&self, index: SeamParamKpId) -> i32 {
+        if index.is_valid() {
+            unsafe { self.parts.kp[index as usize].i32_val }
+        } else {
+            0
+        }
     }
 
-    pub fn vp_f32(&self, index: usize) -> f32 {
-        unsafe { self.parts.vp[index].f32_val }
+    pub fn op_f32(&self, index: SeamParamOpId) -> f32 {
+        if index.is_valid() {
+            unsafe { self.parts.op[index as usize].f32_val }
+        } else {
+            0.0
+        }
     }
 
-    pub fn vp_i32(&self, index: usize) -> i32 {
-        unsafe { self.parts.vp[index].i32_val }
+    pub fn op_i32(&self, index: SeamParamOpId) -> i32 {
+        if index.is_valid() {
+            unsafe { self.parts.op[index as usize].i32_val }
+        } else {
+            0
+        }
     }
 
-    pub fn oc_f32(&self, index: usize) -> f32 {
-        unsafe { self.parts.oc[index].f32_val }
+    pub fn vp_f32(&self, index: SeamParamVpId) -> f32 {
+        if index.is_valid() {
+            unsafe { self.parts.vp[index as usize].f32_val }
+        } else {
+            0.0
+        }
     }
 
-    pub fn oc_i32(&self, index: usize) -> i32 {
-        unsafe { self.parts.oc[index].i32_val }
+    pub fn vp_i32(&self, index: SeamParamVpId) -> i32 {
+        if index.is_valid() {
+            unsafe { self.parts.vp[index as usize].i32_val }
+        } else {
+            0
+        }
     }
 
-    pub fn sf_f32(&self, index: usize) -> f32 {
-        unsafe { self.parts.sf[index].f32_val }
+    pub fn oc_f32(&self, index: SeamParamOcId) -> f32 {
+        if index.is_valid() {
+            unsafe { self.parts.oc[index as usize].f32_val }
+        } else {
+            0.0
+        }
     }
 
-    pub fn sf_i32(&self, index: usize) -> i32 {
-        unsafe { self.parts.sf[index].i32_val }
+    pub fn oc_i32(&self, index: SeamParamOcId) -> i32 {
+        if index.is_valid() {
+            unsafe { self.parts.oc[index as usize].i32_val }
+        } else {
+            0
+        }
     }
 
-    pub fn xp_en(&self, index: usize) -> i32 {
-        unsafe { self.parts.sf[1].i32_val & (1 << index) }
+    pub fn sf_f32(&self, index: SeamParamSfId) -> f32 {
+        if index.is_valid() {
+            unsafe { self.parts.sf[index as usize].f32_val }
+        } else {
+            0.0
+        }
     }
 
-    pub fn kp_en(&self, index: usize) -> i32 {
-        unsafe { self.parts.sf[2].i32_val & (1 << index) }
+    pub fn sf_i32(&self, index: SeamParamSfId) -> i32 {
+        if index.is_valid() {
+            unsafe { self.parts.sf[index as usize].i32_val }
+        } else {
+            0
+        }
+    }
+
+    pub fn xp_en(&self, index: SeamParamXpId) -> i32 {
+        if index.is_valid() {
+            unsafe { self.parts.sf[1].i32_val & (1 << index as usize) }
+        } else {
+            0
+        }
+    }
+
+    pub fn kp_en(&self, index: SeamParamKpId) -> i32 {
+        if index.is_valid() {
+            unsafe { self.parts.sf[2].i32_val & (1 << index as usize) }
+        } else {
+            0
+        }
     }
 
     pub fn op_en_bits(&self) -> i64 {
@@ -362,9 +1174,13 @@ impl SeamParamsV0 {
         }
     }
 
-    pub fn op_en(&self, index: usize) -> i32 {
-        if (self.op_en_bits() & (1 << index)) != 0 {
-            1
+    pub fn op_en(&self, index: SeamParamOpId) -> i32 {
+        if index.is_valid() {
+            if (self.op_en_bits() & (1 << index as usize)) != 0 {
+                1
+            } else {
+                0
+            }
         } else {
             0
         }
@@ -379,9 +1195,13 @@ impl SeamParamsV0 {
         }
     }
 
-    pub fn vp_en(&self, index: usize) -> i32 {
-        if (self.vp_en_bits() & (1 << index)) != 0 {
-            1
+    pub fn vp_en(&self, index: SeamParamVpId) -> i32 {
+        if index.is_valid() {
+            if (self.vp_en_bits() & (1 << index as usize)) != 0 {
+                1
+            } else {
+                0
+            }
         } else {
             0
         }
@@ -396,9 +1216,13 @@ impl SeamParamsV0 {
         }
     }
 
-    pub fn oc_en(&self, index: usize) -> i32 {
-        if (self.oc_en_bits() & (1 << index)) != 0 {
-            1
+    pub fn oc_en(&self, index: SeamParamOcId) -> i32 {
+        if index.is_valid() {
+            if (self.oc_en_bits() & (1 << index as usize)) != 0 {
+                1
+            } else {
+                0
+            }
         } else {
             0
         }
@@ -582,6 +1406,13 @@ impl Default for SeamProfileFFI {
     }
 }
 
+pub type FvSeamParamFlatId = SeamParamFlatId;
+pub type FvSeamParamXpId = SeamParamXpId;
+pub type FvSeamParamKpId = SeamParamKpId;
+pub type FvSeamParamOpId = SeamParamOpId;
+pub type FvSeamParamVpId = SeamParamVpId;
+pub type FvSeamParamOcId = SeamParamOcId;
+pub type FvSeamParamSfId = SeamParamSfId;
 pub type FvSeamParamValue = SeamParamValue;
 pub type FvSeamParamsPartsV0 = SeamParamsPartsV0;
 pub type FvSeamParamsV0 = SeamParamsV0;
@@ -910,16 +1741,16 @@ impl SeamProfileManager {
         self.current_profile_mut().v0_mut()
     }
 
-    pub fn cur_v0_value_f32(&self, index: usize) -> f32 {
-        if index < 250 {
+    pub fn cur_v0_value_f32(&self, index: SeamParamFlatId) -> f32 {
+        if index.is_valid() {
             self.current_profile().v0().value_f32(index)
         } else {
             0.0
         }
     }
 
-    pub fn set_cur_v0_value_f32(&mut self, index: usize, value: f32) {
-        if index < 250 {
+    pub fn set_cur_v0_value_f32(&mut self, index: SeamParamFlatId, value: f32) {
+        if index.is_valid() {
             self.current_profile_mut()
                 .v0_mut()
                 .set_value_f32(index, value);
@@ -927,16 +1758,16 @@ impl SeamProfileManager {
         }
     }
 
-    pub fn cur_v0_value_i32(&self, index: usize) -> i32 {
-        if index < 250 {
+    pub fn cur_v0_value_i32(&self, index: SeamParamFlatId) -> i32 {
+        if index.is_valid() {
             self.current_profile().v0().value_i32(index)
         } else {
             0
         }
     }
 
-    pub fn set_cur_v0_value_i32(&mut self, index: usize, value: i32) {
-        if index < 250 {
+    pub fn set_cur_v0_value_i32(&mut self, index: SeamParamFlatId, value: i32) {
+        if index.is_valid() {
             self.current_profile_mut()
                 .v0_mut()
                 .set_value_i32(index, value);
@@ -1071,153 +1902,153 @@ pub unsafe extern "C" fn fv_spa_v0_cur() -> *mut FvSeamParamsV0 {
 /// 返回 FvSeamParamsV0 平面空间中指定寄存器的 32 位浮点参数值。
 /// # Safety
 #[no_mangle]
-pub unsafe extern "C" fn fv_spa_v0_f32(spa: *mut FvSeamParamsV0, index: i32) -> f32 {
+pub unsafe extern "C" fn fv_spa_v0_f32(spa: *mut FvSeamParamsV0, index: FvSeamParamFlatId) -> f32 {
     assert!(!spa.is_null());
-    (*spa).value_f32(index as usize)
+    (*spa).value_f32(index)
 }
 
 /// 返回 FvSeamParamsV0 平面空间中指定寄存器的 32 位整型参数值。
 /// # Safety
 #[no_mangle]
-pub unsafe extern "C" fn fv_spa_v0_i32(spa: *mut FvSeamParamsV0, index: i32) -> i32 {
+pub unsafe extern "C" fn fv_spa_v0_i32(spa: *mut FvSeamParamsV0, index: FvSeamParamFlatId) -> i32 {
     assert!(!spa.is_null());
-    (*spa).value_i32(index as usize)
+    (*spa).value_i32(index)
 }
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位浮点参数 XP 值。
 /// # Safety
 #[no_mangle]
-pub unsafe extern "C" fn fv_spa_v0_xp_f32(spa: *mut FvSeamParamsV0, index: i32) -> f32 {
+pub unsafe extern "C" fn fv_spa_v0_xp_f32(spa: *mut FvSeamParamsV0, index: FvSeamParamXpId) -> f32 {
     assert!(!spa.is_null());
-    (*spa).xp_f32(index as usize)
+    (*spa).xp_f32(index)
 }
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位整型参数 XP 值。
 /// # Safety
 #[no_mangle]
-pub unsafe extern "C" fn fv_spa_v0_xp_i32(spa: *mut FvSeamParamsV0, index: i32) -> i32 {
+pub unsafe extern "C" fn fv_spa_v0_xp_i32(spa: *mut FvSeamParamsV0, index: FvSeamParamXpId) -> i32 {
     assert!(!spa.is_null());
-    (*spa).xp_i32(index as usize)
+    (*spa).xp_i32(index)
 }
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位浮点参数 KP 值。
 /// # Safety
 #[no_mangle]
-pub unsafe extern "C" fn fv_spa_v0_kp_f32(spa: *mut FvSeamParamsV0, index: i32) -> f32 {
+pub unsafe extern "C" fn fv_spa_v0_kp_f32(spa: *mut FvSeamParamsV0, index: FvSeamParamKpId) -> f32 {
     assert!(!spa.is_null());
-    (*spa).kp_f32(index as usize)
+    (*spa).kp_f32(index)
 }
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位整型参数 KP 值。
 /// # Safety
 #[no_mangle]
-pub unsafe extern "C" fn fv_spa_v0_kp_i32(spa: *mut FvSeamParamsV0, index: i32) -> i32 {
+pub unsafe extern "C" fn fv_spa_v0_kp_i32(spa: *mut FvSeamParamsV0, index: FvSeamParamKpId) -> i32 {
     assert!(!spa.is_null());
-    (*spa).kp_i32(index as usize)
+    (*spa).kp_i32(index)
 }
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位浮点参数 OP 值。
 /// # Safety
 #[no_mangle]
-pub unsafe extern "C" fn fv_spa_v0_op_f32(spa: *mut FvSeamParamsV0, index: i32) -> f32 {
+pub unsafe extern "C" fn fv_spa_v0_op_f32(spa: *mut FvSeamParamsV0, index: FvSeamParamOpId) -> f32 {
     assert!(!spa.is_null());
-    (*spa).op_f32(index as usize)
+    (*spa).op_f32(index)
 }
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位整型参数 OP 值。
 /// # Safety
 #[no_mangle]
-pub unsafe extern "C" fn fv_spa_v0_op_i32(spa: *mut FvSeamParamsV0, index: i32) -> i32 {
+pub unsafe extern "C" fn fv_spa_v0_op_i32(spa: *mut FvSeamParamsV0, index: FvSeamParamOpId) -> i32 {
     assert!(!spa.is_null());
-    (*spa).op_i32(index as usize)
+    (*spa).op_i32(index)
 }
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位浮点参数 VP 值。
 /// # Safety
 #[no_mangle]
-pub unsafe extern "C" fn fv_spa_v0_vp_f32(spa: *mut FvSeamParamsV0, index: i32) -> f32 {
+pub unsafe extern "C" fn fv_spa_v0_vp_f32(spa: *mut FvSeamParamsV0, index: FvSeamParamVpId) -> f32 {
     assert!(!spa.is_null());
-    (*spa).vp_f32(index as usize)
+    (*spa).vp_f32(index)
 }
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位整型参数 VP 值。
 /// # Safety
 #[no_mangle]
-pub unsafe extern "C" fn fv_spa_v0_vp_i32(spa: *mut FvSeamParamsV0, index: i32) -> i32 {
+pub unsafe extern "C" fn fv_spa_v0_vp_i32(spa: *mut FvSeamParamsV0, index: FvSeamParamVpId) -> i32 {
     assert!(!spa.is_null());
-    (*spa).vp_i32(index as usize)
+    (*spa).vp_i32(index)
 }
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位浮点参数 OC 值。
 /// # Safety
 #[no_mangle]
-pub unsafe extern "C" fn fv_spa_v0_oc_f32(spa: *mut FvSeamParamsV0, index: i32) -> f32 {
+pub unsafe extern "C" fn fv_spa_v0_oc_f32(spa: *mut FvSeamParamsV0, index: FvSeamParamOcId) -> f32 {
     assert!(!spa.is_null());
-    (*spa).oc_f32(index as usize)
+    (*spa).oc_f32(index)
 }
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位整型参数 OC 值。
 /// # Safety
 #[no_mangle]
-pub unsafe extern "C" fn fv_spa_v0_oc_i32(spa: *mut FvSeamParamsV0, index: i32) -> i32 {
+pub unsafe extern "C" fn fv_spa_v0_oc_i32(spa: *mut FvSeamParamsV0, index: FvSeamParamOcId) -> i32 {
     assert!(!spa.is_null());
-    (*spa).oc_i32(index as usize)
+    (*spa).oc_i32(index)
 }
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位浮点参数 SF 值。
 /// # Safety
 #[no_mangle]
-pub unsafe extern "C" fn fv_spa_v0_sf_f32(spa: *mut FvSeamParamsV0, index: i32) -> f32 {
+pub unsafe extern "C" fn fv_spa_v0_sf_f32(spa: *mut FvSeamParamsV0, index: FvSeamParamSfId) -> f32 {
     assert!(!spa.is_null());
-    (*spa).sf_f32(index as usize)
+    (*spa).sf_f32(index)
 }
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位整型参数 SF 值。
 /// # Safety
 #[no_mangle]
-pub unsafe extern "C" fn fv_spa_v0_sf_i32(spa: *mut FvSeamParamsV0, index: i32) -> i32 {
+pub unsafe extern "C" fn fv_spa_v0_sf_i32(spa: *mut FvSeamParamsV0, index: FvSeamParamSfId) -> i32 {
     assert!(!spa.is_null());
-    (*spa).sf_i32(index as usize)
+    (*spa).sf_i32(index)
 }
 
 /// 返回 FvSeamParamsV0 中的指定索引的 XP 参数开关。
 /// # Safety
 #[no_mangle]
-pub unsafe extern "C" fn fv_spa_v0_xp_en(spa: *mut FvSeamParamsV0, index: i32) -> i32 {
+pub unsafe extern "C" fn fv_spa_v0_xp_en(spa: *mut FvSeamParamsV0, index: FvSeamParamXpId) -> i32 {
     assert!(!spa.is_null());
-    (*spa).xp_en(index as usize)
+    (*spa).xp_en(index)
 }
 
 /// 返回 FvSeamParamsV0 中的指定索引的 KP 参数开关。
 /// # Safety
 #[no_mangle]
-pub unsafe extern "C" fn fv_spa_v0_kp_en(spa: *mut FvSeamParamsV0, index: i32) -> i32 {
+pub unsafe extern "C" fn fv_spa_v0_kp_en(spa: *mut FvSeamParamsV0, index: FvSeamParamKpId) -> i32 {
     assert!(!spa.is_null());
-    (*spa).kp_en(index as usize)
+    (*spa).kp_en(index)
 }
 
 /// 返回 FvSeamParamsV0 中的指定索引的 OP 参数开关。
 /// # Safety
 #[no_mangle]
-pub unsafe extern "C" fn fv_spa_v0_op_en(spa: *mut FvSeamParamsV0, index: i32) -> i32 {
+pub unsafe extern "C" fn fv_spa_v0_op_en(spa: *mut FvSeamParamsV0, index: FvSeamParamOpId) -> i32 {
     assert!(!spa.is_null());
-    (*spa).op_en(index as usize)
+    (*spa).op_en(index)
 }
 
 /// 返回 FvSeamParamsV0 中的指定索引的 VP 参数开关。
 /// # Safety
 #[no_mangle]
-pub unsafe extern "C" fn fv_spa_v0_vp_en(spa: *mut FvSeamParamsV0, index: i32) -> i32 {
+pub unsafe extern "C" fn fv_spa_v0_vp_en(spa: *mut FvSeamParamsV0, index: FvSeamParamVpId) -> i32 {
     assert!(!spa.is_null());
-    (*spa).vp_en(index as usize)
+    (*spa).vp_en(index)
 }
 
 /// 返回 FvSeamParamsV0 中的指定索引的 OC 参数开关。
 /// # Safety
 #[no_mangle]
-pub unsafe extern "C" fn fv_spa_v0_oc_en(spa: *mut FvSeamParamsV0, index: i32) -> i32 {
+pub unsafe extern "C" fn fv_spa_v0_oc_en(spa: *mut FvSeamParamsV0, index: FvSeamParamOcId) -> i32 {
     assert!(!spa.is_null());
-    (*spa).oc_en(index as usize)
+    (*spa).oc_en(index)
 }
 
 /// 返回 FvSeamParamsV0 中的主要接头形式值。
@@ -1263,6 +2094,16 @@ mod tests {
         }
         "#;
         let _v0: SeamParamsV0 = serde_json::from_str(s).unwrap();
+    }
+
+    #[test]
+    fn test_seam_param_flat_id() {
+        assert_eq!(SeamParamFlatId::from(0), SeamParamFlatId::XpExposureControl);
+        assert_eq!(
+            SeamParamFlatId::from(1),
+            SeamParamFlatId::XpExposureFramerate
+        );
+        assert_eq!(SeamParamFlatId::from(256), SeamParamFlatId::Invalid);
     }
 
     #[test]

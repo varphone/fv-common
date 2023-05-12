@@ -67,6 +67,20 @@ typedef enum FvSeamParamFlatId
     FV_SPA_F_XP_ROI_Y,
     FV_SPA_F_XP_ROI_W,
     FV_SPA_F_XP_ROI_H,
+    FV_SPA_F_XP_16,
+    FV_SPA_F_XP_17,
+    FV_SPA_F_XP_18,
+    FV_SPA_F_XP_19,
+    FV_SPA_F_XP_20,
+    FV_SPA_F_XP_21,
+    FV_SPA_F_XP_22,
+    FV_SPA_F_XP_23,
+    FV_SPA_F_XP_24,
+    FV_SPA_F_XP_25,
+    FV_SPA_F_XP_26,
+    FV_SPA_F_XP_27,
+    FV_SPA_F_XP_28,
+    FV_SPA_F_XP_29,
     // KP 区
     FV_SPA_F_KP_ANGLE1 = 30,
     FV_SPA_F_KP_ANGLE2,
@@ -80,6 +94,24 @@ typedef enum FvSeamParamFlatId
     FV_SPA_F_KP_GAP2,
     FV_SPA_F_KP_DROP1,
     FV_SPA_F_KP_DROP2,
+    FV_SPA_F_KP_12,
+    FV_SPA_F_KP_13,
+    FV_SPA_F_KP_14,
+    FV_SPA_F_KP_15,
+    FV_SPA_F_KP_16,
+    FV_SPA_F_KP_17,
+    FV_SPA_F_KP_18,
+    FV_SPA_F_KP_19,
+    FV_SPA_F_KP_20,
+    FV_SPA_F_KP_21,
+    FV_SPA_F_KP_22,
+    FV_SPA_F_KP_23,
+    FV_SPA_F_KP_24,
+    FV_SPA_F_KP_25,
+    FV_SPA_F_KP_26,
+    FV_SPA_F_KP_27,
+    FV_SPA_F_KP_28,
+    FV_SPA_F_KP_29,
     // OP 区
     FV_SPA_F_OP_DETECT_METHOD = 60,
     FV_SPA_F_OP_DIRECTION,
@@ -93,6 +125,56 @@ typedef enum FvSeamParamFlatId
     FV_SPA_F_OP_BEVEL_ANGLE2,
     FV_SPA_F_OP_NORMAL_TYPE1,
     FV_SPA_F_OP_NORMAL_TYPE2,
+    FV_SPA_F_OP_10,
+    FV_SPA_F_OP_11,
+    FV_SPA_F_OP_12,
+    FV_SPA_F_OP_13,
+    FV_SPA_F_OP_14,
+    FV_SPA_F_OP_15,
+    FV_SPA_F_OP_16,
+    FV_SPA_F_OP_17,
+    FV_SPA_F_OP_18,
+    FV_SPA_F_OP_19,
+    FV_SPA_F_OP_20,
+    FV_SPA_F_OP_21,
+    FV_SPA_F_OP_22,
+    FV_SPA_F_OP_23,
+    FV_SPA_F_OP_24,
+    FV_SPA_F_OP_25,
+    FV_SPA_F_OP_26,
+    FV_SPA_F_OP_27,
+    FV_SPA_F_OP_28,
+    FV_SPA_F_OP_29,
+    FV_SPA_F_OP_30,
+    FV_SPA_F_OP_31,
+    FV_SPA_F_OP_32,
+    FV_SPA_F_OP_33,
+    FV_SPA_F_OP_34,
+    FV_SPA_F_OP_35,
+    FV_SPA_F_OP_36,
+    FV_SPA_F_OP_37,
+    FV_SPA_F_OP_38,
+    FV_SPA_F_OP_39,
+    FV_SPA_F_OP_40,
+    FV_SPA_F_OP_41,
+    FV_SPA_F_OP_42,
+    FV_SPA_F_OP_43,
+    FV_SPA_F_OP_44,
+    FV_SPA_F_OP_45,
+    FV_SPA_F_OP_46,
+    FV_SPA_F_OP_47,
+    FV_SPA_F_OP_48,
+    FV_SPA_F_OP_49,
+    FV_SPA_F_OP_50,
+    FV_SPA_F_OP_51,
+    FV_SPA_F_OP_52,
+    FV_SPA_F_OP_53,
+    FV_SPA_F_OP_54,
+    FV_SPA_F_OP_55,
+    FV_SPA_F_OP_56,
+    FV_SPA_F_OP_57,
+    FV_SPA_F_OP_58,
+    FV_SPA_F_OP_59,
     // VP 区
     FV_SPA_F_VP_ANGLE_MIN = 120,
     FV_SPA_F_VP_ANGLE_MAX,
@@ -126,6 +208,22 @@ typedef enum FvSeamParamFlatId
     FV_SPA_F_VP_WELDED_RSV,
     FV_SPA_F_VP_NORMAL_ANGLE_MIN,
     FV_SPA_F_VP_NORMAL_ANGLE_MAX,
+    FV_SPA_F_VP_32,
+    FV_SPA_F_VP_33,
+    FV_SPA_F_VP_34,
+    FV_SPA_F_VP_35,
+    FV_SPA_F_VP_36,
+    FV_SPA_F_VP_37,
+    FV_SPA_F_VP_38,
+    FV_SPA_F_VP_39,
+    FV_SPA_F_VP_40,
+    FV_SPA_F_VP_41,
+    FV_SPA_F_VP_42,
+    FV_SPA_F_VP_43,
+    FV_SPA_F_VP_44,
+    FV_SPA_F_VP_45,
+    FV_SPA_F_VP_46,
+    FV_SPA_F_VP_47,
     FV_SPA_F_VP_L1_A = 168,
     FV_SPA_F_VP_L1_APLUS,
     FV_SPA_F_VP_L1_LENGTH,
@@ -151,6 +249,54 @@ typedef enum FvSeamParamFlatId
     FV_SPA_F_OC_TRACKING_AREA,
     FV_SPA_F_OC_TRACKING_STRENGTH,
     FV_SPA_F_OC_TRACKING_DURATION,
+    FV_SPA_F_OC_12,
+    FV_SPA_F_OC_13,
+    FV_SPA_F_OC_14,
+    FV_SPA_F_OC_15,
+    FV_SPA_F_OC_16,
+    FV_SPA_F_OC_17,
+    FV_SPA_F_OC_18,
+    FV_SPA_F_OC_19,
+    FV_SPA_F_OC_20,
+    FV_SPA_F_OC_21,
+    FV_SPA_F_OC_22,
+    FV_SPA_F_OC_23,
+    FV_SPA_F_OC_24,
+    FV_SPA_F_OC_25,
+    FV_SPA_F_OC_26,
+    FV_SPA_F_OC_27,
+    FV_SPA_F_OC_28,
+    FV_SPA_F_OC_29,
+    FV_SPA_F_OC_30,
+    FV_SPA_F_OC_31,
+    FV_SPA_F_OC_32,
+    FV_SPA_F_OC_33,
+    FV_SPA_F_OC_34,
+    FV_SPA_F_OC_35,
+    FV_SPA_F_OC_36,
+    FV_SPA_F_OC_37,
+    FV_SPA_F_OC_38,
+    FV_SPA_F_OC_39,
+    FV_SPA_F_OC_40,
+    FV_SPA_F_OC_41,
+    FV_SPA_F_OC_42,
+    FV_SPA_F_OC_43,
+    FV_SPA_F_OC_44,
+    FV_SPA_F_OC_45,
+    FV_SPA_F_OC_46,
+    FV_SPA_F_OC_47,
+    FV_SPA_F_OC_48,
+    FV_SPA_F_OC_49,
+    FV_SPA_F_OC_50,
+    FV_SPA_F_OC_51,
+    FV_SPA_F_OC_52,
+    FV_SPA_F_OC_53,
+    FV_SPA_F_OC_54,
+    FV_SPA_F_OC_55,
+    FV_SPA_F_OC_56,
+    FV_SPA_F_OC_57,
+    FV_SPA_F_OC_58,
+    FV_SPA_F_OC_59,
     // SF 区
     FV_SPA_F_SF_JOINT_TYPE = 240,
     FV_SPA_F_SF_XP_EN,
@@ -183,6 +329,20 @@ typedef enum FvSeamParamXpId
     FV_SPA_XP_ROI_Y,
     FV_SPA_XP_ROI_W,
     FV_SPA_XP_ROI_H,
+    FV_SPA_XP_16,
+    FV_SPA_XP_17,
+    FV_SPA_XP_18,
+    FV_SPA_XP_19,
+    FV_SPA_XP_20,
+    FV_SPA_XP_21,
+    FV_SPA_XP_22,
+    FV_SPA_XP_23,
+    FV_SPA_XP_24,
+    FV_SPA_XP_25,
+    FV_SPA_XP_26,
+    FV_SPA_XP_27,
+    FV_SPA_XP_28,
+    FV_SPA_XP_29,
 } FvSeamParamXpId;
 
 /// 一个代表接头识别参数 KP 区编号的枚举。
@@ -200,6 +360,24 @@ typedef enum FvSeamParamKpId
     FV_SPA_KP_GAP2,
     FV_SPA_KP_DROP1,
     FV_SPA_KP_DROP2,
+    FV_SPA_KP_12,
+    FV_SPA_KP_13,
+    FV_SPA_KP_14,
+    FV_SPA_KP_15,
+    FV_SPA_KP_16,
+    FV_SPA_KP_17,
+    FV_SPA_KP_18,
+    FV_SPA_KP_19,
+    FV_SPA_KP_20,
+    FV_SPA_KP_21,
+    FV_SPA_KP_22,
+    FV_SPA_KP_23,
+    FV_SPA_KP_24,
+    FV_SPA_KP_25,
+    FV_SPA_KP_26,
+    FV_SPA_KP_27,
+    FV_SPA_KP_28,
+    FV_SPA_KP_29,
 } FvSeamParamKpId;
 
 /// 一个代表接头识别参数 OP 区编号的枚举。
@@ -217,6 +395,56 @@ typedef enum FvSeamParamOpId
     FV_SPA_OP_BEVEL_ANGLE2,
     FV_SPA_OP_NORMAL_TYPE1,
     FV_SPA_OP_NORMAL_TYPE2,
+    FV_SPA_OP_10,
+    FV_SPA_OP_11,
+    FV_SPA_OP_12,
+    FV_SPA_OP_13,
+    FV_SPA_OP_14,
+    FV_SPA_OP_15,
+    FV_SPA_OP_16,
+    FV_SPA_OP_17,
+    FV_SPA_OP_18,
+    FV_SPA_OP_19,
+    FV_SPA_OP_20,
+    FV_SPA_OP_21,
+    FV_SPA_OP_22,
+    FV_SPA_OP_23,
+    FV_SPA_OP_24,
+    FV_SPA_OP_25,
+    FV_SPA_OP_26,
+    FV_SPA_OP_27,
+    FV_SPA_OP_28,
+    FV_SPA_OP_29,
+    FV_SPA_OP_30,
+    FV_SPA_OP_31,
+    FV_SPA_OP_32,
+    FV_SPA_OP_33,
+    FV_SPA_OP_34,
+    FV_SPA_OP_35,
+    FV_SPA_OP_36,
+    FV_SPA_OP_37,
+    FV_SPA_OP_38,
+    FV_SPA_OP_39,
+    FV_SPA_OP_40,
+    FV_SPA_OP_41,
+    FV_SPA_OP_42,
+    FV_SPA_OP_43,
+    FV_SPA_OP_44,
+    FV_SPA_OP_45,
+    FV_SPA_OP_46,
+    FV_SPA_OP_47,
+    FV_SPA_OP_48,
+    FV_SPA_OP_49,
+    FV_SPA_OP_50,
+    FV_SPA_OP_51,
+    FV_SPA_OP_52,
+    FV_SPA_OP_53,
+    FV_SPA_OP_54,
+    FV_SPA_OP_55,
+    FV_SPA_OP_56,
+    FV_SPA_OP_57,
+    FV_SPA_OP_58,
+    FV_SPA_OP_59,
 } FvSeamParamOpId;
 
 /// 一个代表接头识别参数 VP 区编号的枚举。
@@ -254,6 +482,22 @@ typedef enum FvSeamParamVpId
     FV_SPA_VP_WELDED_RSV,
     FV_SPA_VP_NORMAL_ANGLE_MIN,
     FV_SPA_VP_NORMAL_ANGLE_MAX,
+    FV_SPA_VP_32,
+    FV_SPA_VP_33,
+    FV_SPA_VP_34,
+    FV_SPA_VP_35,
+    FV_SPA_VP_36,
+    FV_SPA_VP_37,
+    FV_SPA_VP_38,
+    FV_SPA_VP_39,
+    FV_SPA_VP_40,
+    FV_SPA_VP_41,
+    FV_SPA_VP_42,
+    FV_SPA_VP_43,
+    FV_SPA_VP_44,
+    FV_SPA_VP_45,
+    FV_SPA_VP_46,
+    FV_SPA_VP_47,
     FV_SPA_VP_L1_A = 48,
     FV_SPA_VP_L1_APLUS,
     FV_SPA_VP_L1_LENGTH,
@@ -341,12 +585,12 @@ FvSeamParamsV0* fv_spa_v0_cur(void);
 /// 返回 FvSeamParamsV0 平面空间中指定寄存器的 32 位浮点参数值。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
 /// @param index 寄存器编号，@see FvSeamParamFlatId。
-float fv_spa_v0_f32(FvSeamParamsV0* spa, int32_t index);
+float fv_spa_v0_f32(FvSeamParamsV0* spa, FvSeamParamFlatId index);
 
 /// 返回 FvSeamParamsV0 平面空间中指定寄存器的 32 位整型参数值。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
 /// @param index 寄存器编号，@see FvSeamParamFlatId。
-int32_t fv_spa_v0_i32(FvSeamParamsV0* spa, int32_t index);
+int32_t fv_spa_v0_i32(FvSeamParamsV0* spa, FvSeamParamFlatId index);
 
 /// 返回 FvSeamParamsV0 中的 XP 值表。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
@@ -355,12 +599,12 @@ FvSeamParamValue* fv_spa_v0_xpv(FvSeamParamsV0* spa);
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位浮点参数 XP 值。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
 /// @param index 寄存器编号，@see FvSeamParamXpId。
-float fv_spa_v0_xp_f32(FvSeamParamsV0* spa, int32_t index);
+float fv_spa_v0_xp_f32(FvSeamParamsV0* spa, FvSeamParamXpId index);
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位整型参数 XP 值。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
 /// @param index 寄存器编号，@see FvSeamParamXpId。
-int32_t fv_spa_v0_xp_i32(FvSeamParamsV0* spa, int32_t index);
+int32_t fv_spa_v0_xp_i32(FvSeamParamsV0* spa, FvSeamParamXpId index);
 
 /// 返回 FvSeamParamsV0 中的 KP 值表。
 FvSeamParamValue* fv_spa_v0_kpv(FvSeamParamsV0* spa);
@@ -368,12 +612,12 @@ FvSeamParamValue* fv_spa_v0_kpv(FvSeamParamsV0* spa);
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位浮点参数 KP 值。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
 /// @param index 寄存器编号，@see FvSeamParamKpId。
-float fv_spa_v0_kp_f32(FvSeamParamsV0* spa, int32_t index);
+float fv_spa_v0_kp_f32(FvSeamParamsV0* spa, FvSeamParamKpId index);
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位整型参数 KP 值。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
 /// @param index 寄存器编号，@see FvSeamParamKpId。
-int32_t fv_spa_v0_kp_i32(FvSeamParamsV0* spa, int32_t index);
+int32_t fv_spa_v0_kp_i32(FvSeamParamsV0* spa, FvSeamParamKpId index);
 
 /// 返回 FvSeamParamsV0 中的 OP 值表。
 FvSeamParamValue* fv_spa_v0_opv(FvSeamParamsV0* spa);
@@ -381,12 +625,12 @@ FvSeamParamValue* fv_spa_v0_opv(FvSeamParamsV0* spa);
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位浮点参数 OP 值。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
 /// @param index 寄存器编号，@see FvSeamParamOpId。
-float fv_spa_v0_op_f32(FvSeamParamsV0* spa, int32_t index);
+float fv_spa_v0_op_f32(FvSeamParamsV0* spa, FvSeamParamOpId index);
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位整型参数 OP 值。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
 /// @param index 寄存器编号，@see FvSeamParamOpId。
-int32_t fv_spa_v0_op_i32(FvSeamParamsV0* spa, int32_t index);
+int32_t fv_spa_v0_op_i32(FvSeamParamsV0* spa, FvSeamParamOpId index);
 
 /// 返回 FvSeamParamsV0 中的 VP 值表。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
@@ -395,12 +639,12 @@ FvSeamParamValue* fv_spa_v0_vpv(FvSeamParamsV0* spa);
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位浮点参数 VP 值。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
 /// @param index 寄存器编号，@see FvSeamParamVpId。
-float fv_spa_v0_vp_f32(FvSeamParamsV0* spa, int32_t index);
+float fv_spa_v0_vp_f32(FvSeamParamsV0* spa, FvSeamParamVpId index);
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位整型参数 VP 值。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
 /// @param index 寄存器编号，@see FvSeamParamVpId。
-int32_t fv_spa_v0_vp_i32(FvSeamParamsV0* spa, int32_t index);
+int32_t fv_spa_v0_vp_i32(FvSeamParamsV0* spa, FvSeamParamVpId index);
 
 /// 返回 FvSeamParamsV0 中的 OC 值表。
 FvSeamParamValue* fv_spa_v0_ocv(FvSeamParamsV0* spa);
@@ -408,12 +652,12 @@ FvSeamParamValue* fv_spa_v0_ocv(FvSeamParamsV0* spa);
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位浮点参数 OC 值。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
 /// @param index 寄存器编号，@see FvSeamParamOcId。
-float fv_spa_v0_oc_f32(FvSeamParamsV0* spa, int32_t index);
+float fv_spa_v0_oc_f32(FvSeamParamsV0* spa, FvSeamParamOcId index);
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位整型参数 OC 值。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
 /// @param index 寄存器编号，@see FvSeamParamOcId。
-int32_t fv_spa_v0_oc_i32(FvSeamParamsV0* spa, int32_t index);
+int32_t fv_spa_v0_oc_i32(FvSeamParamsV0* spa, FvSeamParamOcId index);
 
 /// 返回 FvSeamParamsV0 中的 SF 值表。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
@@ -421,37 +665,37 @@ FvSeamParamValue* fv_spa_v0_sfv(FvSeamParamsV0* spa);
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位浮点参数 SF 值。
 /// @param index 寄存器编号，@see FvSeamParamSfId。
-float fv_spa_v0_sf_f32(FvSeamParamsV0* spa, int32_t index);
+float fv_spa_v0_sf_f32(FvSeamParamsV0* spa, FvSeamParamSfId index);
 
 /// 返回 FvSeamParamsV0 中指定寄存器的 32 位整型参数 SF 值。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
 /// @param index 寄存器编号，@see FvSeamParamSfId。
-int32_t fv_spa_v0_sf_i32(FvSeamParamsV0* spa, int32_t index);
+int32_t fv_spa_v0_sf_i32(FvSeamParamsV0* spa, FvSeamParamSfId index);
 
 /// 返回 FvSeamParamsV0 中的指定索引的 XP 参数开关。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
 /// @param index 寄存器编号，@see FvSeamParamXpId。
-int32_t fv_spa_v0_xp_en(FvSeamParamsV0* spa, int32_t index);
+int32_t fv_spa_v0_xp_en(FvSeamParamsV0* spa, FvSeamParamXpId index);
 
 /// 返回 FvSeamParamsV0 中的指定索引的 KP 参数开关。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
 /// @param index 寄存器编号，@see FvSeamParamKpId。
-int32_t fv_spa_v0_kp_en(FvSeamParamsV0* spa, int32_t index);
+int32_t fv_spa_v0_kp_en(FvSeamParamsV0* spa, FvSeamParamKpId index);
 
 /// 返回 FvSeamParamsV0 中的指定索引的 OP 参数开关。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
 /// @param index 寄存器编号，@see FvSeamParamOpId。
-int32_t fv_spa_v0_op_en(FvSeamParamsV0* spa, int32_t index);
+int32_t fv_spa_v0_op_en(FvSeamParamsV0* spa, FvSeamParamOpId index);
 
 /// 返回 FvSeamParamsV0 中的指定索引的 VP 参数开关。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
 /// @param index 寄存器编号，@see FvSeamParamVpId。
-int32_t fv_spa_v0_vp_en(FvSeamParamsV0* spa, int32_t index);
+int32_t fv_spa_v0_vp_en(FvSeamParamsV0* spa, FvSeamParamVpId index);
 
 /// 返回 FvSeamParamsV0 中的指定索引的 OC 参数开关。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
 /// @param index 寄存器编号，@see FvSeamParamOcId。
-int32_t fv_spa_v0_oc_en(FvSeamParamsV0* spa, int32_t index);
+int32_t fv_spa_v0_oc_en(FvSeamParamsV0* spa, FvSeamParamOcId index);
 
 /// 返回 FvSeamParamsV0 中的主要接头形式值。
 /// @param spa 接头识别参数 V0 指针，@see fv_spr_v0(), fv_spa_v0_cur()。
@@ -587,13 +831,13 @@ union FvSeamParamsV0
     }
 
     /// 返回平面空间参数值常量引用。
-    const FvSeamParamValue& operator[](const int32_t index) const
+    const FvSeamParamValue& operator[](const FvSeamParamFlatId index) const
     {
         return values[index];
     }
 
     /// 返回平面空间参数值可变引用。
-    FvSeamParamValue& operator[](const int32_t index)
+    FvSeamParamValue& operator[](const FvSeamParamFlatId index)
     {
         return values[index];
     }
@@ -612,12 +856,12 @@ union FvSeamParamsV0
             std::array<FvSeamParamValue, FV_SPA_V0_XP_NUM>&>(parts.xp);
     }
 
-    const FvSeamParamValue& xp(int32_t index) const
+    const FvSeamParamValue& xp(FvSeamParamXpId index) const
     {
         return parts.xp[index];
     }
 
-    FvSeamParamValue& xp(int32_t index)
+    FvSeamParamValue& xp(FvSeamParamXpId index)
     {
         return parts.xp[index];
     }
@@ -636,12 +880,12 @@ union FvSeamParamsV0
             std::array<FvSeamParamValue, FV_SPA_V0_KP_NUM>&>(parts.kp);
     }
 
-    const FvSeamParamValue& kp(int32_t index) const
+    const FvSeamParamValue& kp(FvSeamParamKpId index) const
     {
         return parts.kp[index];
     }
 
-    FvSeamParamValue& kp(int32_t index)
+    FvSeamParamValue& kp(FvSeamParamKpId index)
     {
         return parts.kp[index];
     }
@@ -660,12 +904,12 @@ union FvSeamParamsV0
             std::array<FvSeamParamValue, FV_SPA_V0_OP_NUM>&>(parts.op);
     }
 
-    const FvSeamParamValue& op(int32_t index) const
+    const FvSeamParamValue& op(FvSeamParamOpId index) const
     {
         return parts.op[index];
     }
 
-    FvSeamParamValue& op(int32_t index)
+    FvSeamParamValue& op(FvSeamParamOpId index)
     {
         return parts.op[index];
     }
@@ -684,12 +928,12 @@ union FvSeamParamsV0
             std::array<FvSeamParamValue, FV_SPA_V0_VP_NUM>&>(parts.vp);
     }
 
-    const FvSeamParamValue& vp(int32_t index) const
+    const FvSeamParamValue& vp(FvSeamParamVpId index) const
     {
         return parts.vp[index];
     }
 
-    FvSeamParamValue& vp(int32_t index)
+    FvSeamParamValue& vp(FvSeamParamVpId index)
     {
         return parts.vp[index];
     }
@@ -708,12 +952,12 @@ union FvSeamParamsV0
             std::array<FvSeamParamValue, FV_SPA_V0_OC_NUM>&>(parts.oc);
     }
 
-    const FvSeamParamValue& oc(int32_t index) const
+    const FvSeamParamValue& oc(FvSeamParamOcId index) const
     {
         return parts.oc[index];
     }
 
-    FvSeamParamValue& oc(int32_t index)
+    FvSeamParamValue& oc(FvSeamParamOcId index)
     {
         return parts.oc[index];
     }
@@ -732,27 +976,27 @@ union FvSeamParamsV0
             std::array<FvSeamParamValue, FV_SPA_V0_SF_NUM>&>(parts.sf);
     }
 
-    const FvSeamParamValue& sf(int32_t index) const
+    const FvSeamParamValue& sf(FvSeamParamSfId index) const
     {
         return parts.sf[index];
     }
 
-    FvSeamParamValue& sf(int32_t index)
+    FvSeamParamValue& sf(FvSeamParamSfId index)
     {
         return parts.sf[index];
     }
 
-    bool xpEn(int32_t index)
+    bool xpEn(FvSeamParamXpId index)
     {
         return (parts.sf[FV_SPA_SF_XP_EN].i32 & (1 << index));
     }
 
-    bool kpEn(int32_t index)
+    bool kpEn(FvSeamParamKpId index)
     {
         return (parts.sf[FV_SPA_SF_KP_EN].i32 & (1 << index));
     }
 
-    bool opEn(int32_t index)
+    bool opEn(FvSeamParamOpId index)
     {
         int64_t mask = parts.sf[FV_SPA_SF_OP_EN2].i32;
         mask <<= 30;
@@ -760,7 +1004,7 @@ union FvSeamParamsV0
         return (mask & (1 << index));
     }
 
-    bool vpEn(int32_t index)
+    bool vpEn(FvSeamParamVpId index)
     {
         int64_t mask = parts.sf[FV_SPA_SF_VP_EN2].i32;
         mask <<= 30;
@@ -768,7 +1012,7 @@ union FvSeamParamsV0
         return (mask & (1 << index));
     }
 
-    bool ocEn(int32_t index)
+    bool ocEn(FvSeamParamOcId index)
     {
         int64_t mask = parts.sf[FV_SPA_SF_OC_EN2].i32;
         mask <<= 30;
