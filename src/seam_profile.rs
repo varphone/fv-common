@@ -1597,6 +1597,7 @@ impl SeamProfileManager {
         if dst.id >= 0 && dst.id < n {
             let src = &mut self.profiles[dst.id as usize];
             src.merge(&dst);
+            let _r = self.save_profile(dst.id as usize);
             self.profile_updated = true;
             self.profiles_changed = true;
         }
@@ -1610,6 +1611,7 @@ impl SeamProfileManager {
             if dst.id >= 0 && dst.id < n {
                 let src = &mut self.profiles[dst.id as usize];
                 src.merge(dst);
+                let _r = self.save_profile(dst.id as usize);
                 self.profile_updated = true;
                 self.profiles_changed = true;
             }
