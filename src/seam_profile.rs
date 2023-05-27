@@ -1461,7 +1461,7 @@ impl SeamProfileManager {
         }
     }
 
-    pub fn global<'r>() -> Option<&'r Arc<Mutex<Self>>> {
+    pub fn global<'r>() -> &'r Mutex<Self> {
         use std::sync::Once;
 
         static START: Once = Once::new();
@@ -1472,7 +1472,7 @@ impl SeamProfileManager {
             ))));
         });
 
-        unsafe { SEAM_PROFILE_MANAGER.as_ref() }
+        unsafe { SEAM_PROFILE_MANAGER.as_ref().unwrap() }
     }
 
     pub fn current_profile(&self) -> &SeamProfile {
