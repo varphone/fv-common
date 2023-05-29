@@ -1010,11 +1010,11 @@ impl SeamParamsV0 {
     }
 
     pub fn joint_type_major(&self) -> i32 {
-        unsafe { (self.parts.sf[0].i32_val >> 8) & 0xffff }
+        self.joint_type() >> 8
     }
 
     pub fn joint_type_minor(&self) -> i32 {
-        unsafe { self.parts.sf[0].i32_val & 0xff }
+        self.joint_type() & 0xff
     }
 
     pub fn version(&self) -> i32 {
