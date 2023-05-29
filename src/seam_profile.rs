@@ -529,7 +529,7 @@ impl SeamParamOpId {
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 #[repr(i32)]
 pub enum SeamParamVpId {
-    AngleMin = 120,
+    AngleMin = 0,
     AngleMax,
     GapMin,
     GapMax,
@@ -577,7 +577,7 @@ pub enum SeamParamVpId {
     Vp45,
     Vp46,
     Vp47,
-    L1A = 168,
+    L1A = 48,
     L1APlus,
     L1Length,
     L2A,
