@@ -1,10 +1,15 @@
+use super::FileDigest;
 use atomic_instant::AtomicInstant;
+use log::{debug, error, info, warn};
 use serde::de::Deserializer;
 use serde::ser::{SerializeStruct, Serializer};
 use serde::{Deserialize, Serialize};
 use std::ffi::c_void;
 use std::fmt::{self, Debug};
+use std::io;
 use std::io::Write;
+use std::path::Path;
+use std::process::Command;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 
@@ -13,6 +18,7 @@ pub const SEAM_PROFILES_SCHEMA: &str = "https://full-v.com/schemas/seam-profiles
 pub const SEAM_PROFILES_META_ONLY_SCHEMA: &str =
     "https://full-v.com/schemas/seam-profiles-meta-only.json";
 
+const DEFAULT_BACKUP_DIR: &str = "/var/lib/rklaser/backup";
 const DEFAULT_CONFIG_DIR: &str = "/var/lib/rklaser/profiles";
 
 /// 一个代表接头识别参数平面空间编号的枚举。
@@ -1306,6 +1312,7 @@ pub struct SeamProfile {
     pub v0: SeamParamsV0,
     // TODO：后续扩展参数以 v1, v2 形式增加。
     /// 变更记录。
+    #[serde(skip)]
     commits: AtomicUsize,
 }
 
@@ -1380,12 +1387,29 @@ impl SeamProfile {
         self.commit();
     }
 
+    pub fn set_v0_value_f32(&mut self, index: SeamParamFlatId, value: f32) {
+        self.v0.set_value_f32(index, value);
+        self.commit();
+    }
+
+    pub fn set_v0_value_i32(&mut self, index: SeamParamFlatId, value: i32) {
+        self.v0.set_value_i32(index, value);
+        self.commit();
+    }
+
     pub fn merge(&mut self, other: &SeamProfile) {
         self.set_enabled(other.is_enabled());
         self.meta.set_name(other.name());
         self.meta.set_joint_type(other.v0.joint_type());
         self.v0.merge(&other.v0);
         self.commit();
+    }
+
+    pub fn merge_with_commit(&mut self, other: &SeamProfile) {
+        self.enabled = other.is_enabled();
+        self.meta.set_name(other.name());
+        self.meta.set_joint_type(other.v0.joint_type());
+        self.v0.merge(&other.v0);
     }
 
     /// 提交一次变更记录。
@@ -1447,6 +1471,7 @@ pub type FvSeamProfile = SeamProfileFFI;
 
 /// 一个代表接头识别配置管理器的类型。
 pub struct SeamProfileManager {
+    pub backup_dir: String,
     pub config_dir: String,
     pub profiles: Vec<Box<SeamProfile>>,
     pub profiles_ffi: Vec<SeamProfileFFI>,
@@ -1466,8 +1491,10 @@ unsafe impl Sync for SeamProfileManager {}
 static mut SEAM_PROFILE_MANAGER: Option<Arc<Mutex<SeamProfileManager>>> = None;
 
 impl SeamProfileManager {
-    pub fn new<S: Into<String>>(config_dir: S) -> Self {
+    pub fn new<S: Into<String>>(backup_dir: S, config_dir: S) -> Self {
+        let backup_dir: String = backup_dir.into();
         let config_dir: String = config_dir.into();
+        std::fs::create_dir_all(&backup_dir).unwrap();
         std::fs::create_dir_all(&config_dir).unwrap();
         let mut profiles = Vec::with_capacity(256);
         let mut profiles_ffi = Vec::with_capacity(256);
@@ -1483,6 +1510,7 @@ impl SeamProfileManager {
             profiles_ffi.push(profile_ffi);
         }
         Self {
+            backup_dir,
             config_dir,
             profiles,
             profiles_ffi,
@@ -1504,6 +1532,7 @@ impl SeamProfileManager {
 
         START.call_once(|| unsafe {
             SEAM_PROFILE_MANAGER = Some(Arc::new(Mutex::new(SeamProfileManager::new(
+                DEFAULT_BACKUP_DIR,
                 DEFAULT_CONFIG_DIR,
             ))));
         });
@@ -1645,16 +1674,19 @@ impl SeamProfileManager {
 
     pub fn load_profile(&mut self, id: usize) -> Result<SeamProfile, SeamProfileError> {
         let path = format!("{}/seam-profile-{}.json", self.config_dir, id);
-        let text = std::fs::read_to_string(path)?;
-        Ok(serde_json::from_str::<SeamProfile>(&text)?)
+        let text = std::fs::read_to_string(&path)?;
+        let profile = serde_json::from_str::<SeamProfile>(&text)?;
+        debug!("配置 #{} 已经从 {} 加载", id, path);
+        Ok(profile)
     }
 
     pub fn load_all_profiles(&mut self) {
         let n = self.profiles.len();
         for i in 0..n {
             if let Ok(profile) = self.load_profile(i) {
-                self.get_profile_mut(i).merge(&profile);
+                self.get_profile_mut(i).merge_with_commit(&profile);
             } else {
+                warn!("配置 #{} 不存在，创建默认配置 ...", i);
                 let _r = self.save_profile(i);
             }
         }
@@ -1663,8 +1695,8 @@ impl SeamProfileManager {
     pub fn save_profile(&self, id: usize) -> Result<(), SeamProfileError> {
         let path = format!("{}/seam-profile-{}.json", self.config_dir, id);
         let text = serde_json::to_string(self.get_profile(id))?;
-        std::fs::write(path, text)?;
-        debug!("配置 {} 已经保存到 {}", id, path);
+        std::fs::write(&path, text)?;
+        debug!("配置 #{} 已经保存到 {}", id, path);
         Ok(())
     }
 
@@ -1779,9 +1811,7 @@ impl SeamProfileManager {
 
     pub fn set_cur_v0_value_f32(&mut self, index: SeamParamFlatId, value: f32) {
         if index.is_valid() {
-            self.current_profile_mut()
-                .v0_mut()
-                .set_value_f32(index, value);
+            self.current_profile_mut().set_v0_value_f32(index, value);
             self.commit();
         }
     }
@@ -1796,10 +1826,66 @@ impl SeamProfileManager {
 
     pub fn set_cur_v0_value_i32(&mut self, index: SeamParamFlatId, value: i32) {
         if index.is_valid() {
-            self.current_profile_mut()
-                .v0_mut()
-                .set_value_i32(index, value);
+            self.current_profile_mut().set_v0_value_i32(index, value);
             self.commit();
+        }
+    }
+
+    /// 自动配置所有配置。
+    pub fn auto_backup(&self) {
+        let prev_tarball = format!("{}/profiles-0.tar.gz", &self.backup_dir);
+        let curr_tarball = "/tmp/profiles-0.tar.gz";
+        if self.tar_all(curr_tarball).is_ok() {
+            let prev_digest = FileDigest::new(&prev_tarball);
+            if prev_digest.is_err() {
+                warn!("备份缺失，新建备份 {}", prev_tarball);
+                if let Err(err) = std::fs::copy(curr_tarball, &prev_tarball) {
+                    error!("写入备份 {} 失败：{}", prev_tarball, err);
+                }
+            } else {
+                let curr_digest = FileDigest::new(curr_tarball);
+                if let (Ok(prev), Ok(curr)) = (prev_digest, curr_digest) {
+                    if prev != curr {
+                        self.rotate_backup();
+                        info!("更新备份 {} -> {}", curr_tarball, prev_tarball);
+                        if let Err(err) = std::fs::copy(curr_tarball, &prev_tarball) {
+                            error!("写入备份 {} 失败：{}", prev_tarball, err);
+                        }
+                    } else {
+                        debug!("当前配置与备份一致");
+                    }
+                }
+            }
+        }
+    }
+
+    /// 循环备份。
+    fn rotate_backup(&self) {
+        for i in (0..3).rev() {
+            let src = format!("{}/profiles-{}.tar.gz", &self.backup_dir, i);
+            let dst = format!("{}/profiles-{}.tar.gz", &self.backup_dir, i + 1);
+            if Path::new(&src).exists() {
+                if let Err(err) = std::fs::copy(&src, &dst) {
+                    error!("循环备份 {} -> {} 失败：{}", src, dst, err);
+                } else {
+                    info!("循环备份 {} -> {}", src, dst);
+                }
+            }
+        }
+    }
+
+    /// 打包所有配置。
+    pub fn tar_all(&self, path: &str) -> io::Result<()> {
+        let status = Command::new("/usr/bin/tar")
+            .arg("zcf")
+            .arg(path)
+            .arg(".")
+            .current_dir(&self.config_dir)
+            .status()?;
+        if status.success() {
+            Ok(())
+        } else {
+            Err(io::Error::from_raw_os_error(status.code().unwrap_or(-1)))
         }
     }
 
@@ -1856,7 +1942,7 @@ impl SeamProfileManager {
 
 impl Default for SeamProfileManager {
     fn default() -> Self {
-        Self::new(DEFAULT_CONFIG_DIR)
+        Self::new(DEFAULT_BACKUP_DIR, DEFAULT_CONFIG_DIR)
     }
 }
 
