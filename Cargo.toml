@@ -9,6 +9,7 @@ authors = ["Varphone Wong <varphone@qq.com>"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+atomic-instant = "0.1"
 chrono = "0.4"
 fv-common-sys = { path = "fv-common-sys" }
 gst = { version = "0.20", package = "gstreamer" }

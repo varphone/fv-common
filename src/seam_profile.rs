@@ -1,9 +1,11 @@
+use atomic_instant::AtomicInstant;
 use serde::de::Deserializer;
 use serde::ser::{SerializeStruct, Serializer};
 use serde::{Deserialize, Serialize};
 use std::ffi::c_void;
 use std::fmt::{self, Debug};
 use std::io::Write;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 
 pub const SEAM_PROFILE_SCHEMA: &str = "https://full-v.com/schemas/seam-profile.json";
@@ -1303,6 +1305,8 @@ pub struct SeamProfile {
     /// V0 版参数表指针。
     pub v0: SeamParamsV0,
     // TODO：后续扩展参数以 v1, v2 形式增加。
+    /// 变更记录。
+    commits: AtomicUsize,
 }
 
 impl SeamProfile {
@@ -1313,6 +1317,7 @@ impl SeamProfile {
             id,
             meta: Default::default(),
             v0: Default::default(),
+            commits: AtomicUsize::new(0),
         }
     }
 
@@ -1321,7 +1326,8 @@ impl SeamProfile {
     }
 
     pub fn set_enabled(&mut self, yes: bool) {
-        self.enabled = yes
+        self.enabled = yes;
+        self.commit();
     }
 
     pub fn id(&self) -> i32 {
@@ -1330,6 +1336,7 @@ impl SeamProfile {
 
     pub fn set_id(&mut self, id: i32) {
         self.id = id;
+        self.commit();
     }
 
     pub fn meta(&self) -> &SeamProfileMeta {
@@ -1370,6 +1377,7 @@ impl SeamProfile {
 
     pub fn set_name<S: Into<String>>(&mut self, name: S) {
         self.meta.set_name(name);
+        self.commit();
     }
 
     pub fn merge(&mut self, other: &SeamProfile) {
@@ -1377,6 +1385,25 @@ impl SeamProfile {
         self.meta.set_name(other.name());
         self.meta.set_joint_type(other.v0.joint_type());
         self.v0.merge(&other.v0);
+        self.commit();
+    }
+
+    /// 提交一次变更记录。
+    #[inline]
+    pub fn commit(&self) {
+        self.commits.fetch_add(1, Ordering::SeqCst);
+    }
+
+    /// 返回变更记录。
+    #[inline]
+    pub fn commits(&self) -> usize {
+        self.commits.load(Ordering::SeqCst)
+    }
+
+    /// 清除变更记录。
+    #[inline]
+    pub fn flush(&self) {
+        self.commits.store(0, Ordering::SeqCst);
     }
 }
 
@@ -1418,6 +1445,7 @@ pub type FvSeamParamsPartsV0 = SeamParamsPartsV0;
 pub type FvSeamParamsV0 = SeamParamsV0;
 pub type FvSeamProfile = SeamProfileFFI;
 
+/// 一个代表接头识别配置管理器的类型。
 pub struct SeamProfileManager {
     pub config_dir: String,
     pub profiles: Vec<Box<SeamProfile>>,
@@ -1426,6 +1454,10 @@ pub struct SeamProfileManager {
     pub profile_switched: bool,
     pub profile_updated: bool,
     pub profiles_changed: bool,
+    commits: AtomicUsize,
+    flush_times: AtomicUsize,
+    all_modified: AtomicInstant,
+    profiles_modified: AtomicInstant,
 }
 
 unsafe impl Send for SeamProfileManager {}
@@ -1458,6 +1490,10 @@ impl SeamProfileManager {
             profile_switched: false,
             profile_updated: false,
             profiles_changed: false,
+            commits: AtomicUsize::new(0),
+            flush_times: AtomicUsize::new(0),
+            all_modified: AtomicInstant::now(),
+            profiles_modified: AtomicInstant::now(),
         }
     }
 
@@ -1518,8 +1554,8 @@ impl SeamProfileManager {
         let name: String = name.into();
         if name != self.current_profile_name() {
             self.current_profile_mut().set_name(name);
-            self.profile_updated = true;
-            self.profiles_changed = true;
+            self.profiles_modified.set_now();
+            self.commit();
         }
     }
 
@@ -1531,35 +1567,21 @@ impl SeamProfileManager {
         self.profile_switched = yes;
     }
 
-    pub fn is_profile_updated(&self) -> bool {
-        self.profile_updated
-    }
-
-    pub fn set_profile_updated(&mut self, yes: bool) {
-        self.profile_updated = yes;
-    }
-
-    pub fn is_profiles_changed(&self) -> bool {
-        self.profiles_changed
-    }
-
-    pub fn set_profiles_changed(&mut self, yes: bool) {
-        self.profiles_changed = yes;
-    }
-
     pub fn disable_profile(&mut self, id: usize) {
         if id < self.profiles.len() {
-            self.profiles[id].enabled = false;
+            self.profiles[id].set_enabled(false);
             self.profiles_ffi[id].enabled = 0;
-            self.profiles_changed = true;
+            self.profiles_modified.set_now();
+            self.commit();
         }
     }
 
     pub fn enable_profile(&mut self, id: usize) {
         if id < self.profiles.len() {
-            self.profiles[id].enabled = true;
+            self.profiles[id].set_enabled(true);
             self.profiles_ffi[id].enabled = 1;
-            self.profiles_changed = true;
+            self.profiles_modified.set_now();
+            self.commit();
         }
     }
 
@@ -1570,7 +1592,8 @@ impl SeamProfileManager {
         for p in &mut self.profiles_ffi {
             p.enabled = 0;
         }
-        self.profiles_changed = true;
+        self.profiles_modified.set_now();
+        self.commit();
     }
 
     pub fn enable_all_profiles(&mut self) {
@@ -1580,7 +1603,8 @@ impl SeamProfileManager {
         for p in &mut self.profiles_ffi {
             p.enabled = 1;
         }
-        self.profiles_changed = true;
+        self.profiles_modified.set_now();
+        self.commit();
     }
 
     pub fn get_profile(&self, id: usize) -> &SeamProfile {
@@ -1597,9 +1621,9 @@ impl SeamProfileManager {
         if dst.id >= 0 && dst.id < n {
             let src = &mut self.profiles[dst.id as usize];
             src.merge(&dst);
-            let _r = self.save_profile(dst.id as usize);
-            self.profile_updated = true;
-            self.profiles_changed = true;
+            // let _r = self.save_profile(dst.id as usize);
+            self.profiles_modified.set_now();
+            self.commit();
         }
         Ok(())
     }
@@ -1611,9 +1635,9 @@ impl SeamProfileManager {
             if dst.id >= 0 && dst.id < n {
                 let src = &mut self.profiles[dst.id as usize];
                 src.merge(dst);
-                let _r = self.save_profile(dst.id as usize);
-                self.profile_updated = true;
-                self.profiles_changed = true;
+                // let _r = self.save_profile(dst.id as usize);
+                self.profiles_modified.set_now();
+                self.commit();
             }
         }
         Ok(())
@@ -1639,7 +1663,9 @@ impl SeamProfileManager {
     pub fn save_profile(&self, id: usize) -> Result<(), SeamProfileError> {
         let path = format!("{}/seam-profile-{}.json", self.config_dir, id);
         let text = serde_json::to_string(self.get_profile(id))?;
-        Ok(std::fs::write(path, text)?)
+        std::fs::write(path, text)?;
+        debug!("配置 {} 已经保存到 {}", id, path);
+        Ok(())
     }
 
     pub fn save_all_profiles(&self) {
@@ -1756,7 +1782,7 @@ impl SeamProfileManager {
             self.current_profile_mut()
                 .v0_mut()
                 .set_value_f32(index, value);
-            self.profile_updated = true;
+            self.commit();
         }
     }
 
@@ -1773,8 +1799,58 @@ impl SeamProfileManager {
             self.current_profile_mut()
                 .v0_mut()
                 .set_value_i32(index, value);
-            self.profile_updated = true;
+            self.commit();
         }
+    }
+
+    #[inline]
+    pub fn commit(&self) {
+        self.commits.fetch_add(1, Ordering::SeqCst);
+        self.all_modified.set_now();
+    }
+
+    #[inline]
+    pub fn commits(&self) -> usize {
+        self.commits.load(Ordering::SeqCst)
+    }
+
+    #[inline]
+    pub fn clear_commits(&self) {
+        self.commits.store(0, Ordering::SeqCst);
+    }
+
+    #[inline]
+    pub fn flush_times(&self) -> usize {
+        self.flush_times.load(Ordering::SeqCst)
+    }
+
+    #[inline]
+    pub fn clear_flush_times(&self) {
+        self.flush_times.store(0, Ordering::SeqCst)
+    }
+
+    /// 当有变更时自动保存到文件中。
+    pub fn flush(&self) {
+        if self.commits() > 0 {
+            self.clear_commits();
+            self.flush_times.fetch_add(1, Ordering::SeqCst);
+            for p in &self.profiles {
+                if p.commits() > 0 {
+                    let _r = self.save_profile(p.id() as usize);
+                    p.flush();
+                }
+            }
+        }
+    }
+
+    #[inline]
+    pub fn all_modified(&self) -> &AtomicInstant {
+        &self.all_modified
+    }
+
+    #[inline]
+    pub fn profiles_modified(&self) -> &AtomicInstant {
+        &self.profiles_modified
     }
 }
 
@@ -1826,8 +1902,8 @@ impl<'r> SeamProfilesMetaOnly<'r> {
 /// # Safety
 #[no_mangle]
 pub unsafe extern "C" fn fv_spm_cur_profile() -> *mut FvSeamProfile {
-    if let Some(ref mgr) = SEAM_PROFILE_MANAGER {
-        mgr.lock().unwrap().current_profile_ffi_mut_ptr()
+    if let Ok(ref mut mgr) = SeamProfileManager::global().lock() {
+        mgr.current_profile_ffi_mut_ptr()
     } else {
         std::ptr::null_mut()
     }
@@ -1837,8 +1913,8 @@ pub unsafe extern "C" fn fv_spm_cur_profile() -> *mut FvSeamProfile {
 /// # Safety
 #[no_mangle]
 pub unsafe extern "C" fn fv_spm_cur_profile_id() -> i32 {
-    if let Some(ref mgr) = SEAM_PROFILE_MANAGER {
-        mgr.lock().unwrap().current_profile_id() as i32
+    if let Ok(ref mgr) = SeamProfileManager::global().lock() {
+        mgr.current_profile_id() as i32
     } else {
         -1
     }
@@ -1859,8 +1935,8 @@ pub unsafe extern "C" fn fv_spm_switch_profile(id: i32) -> i32 {
     if !(0..=255).contains(&id) {
         return -1;
     }
-    if let Some(ref mgr) = SEAM_PROFILE_MANAGER {
-        mgr.lock().unwrap().set_current_profile_id(id as usize);
+    if let Ok(ref mut mgr) = SeamProfileManager::global().lock() {
+        mgr.set_current_profile_id(id as usize);
         0
     } else {
         -1
