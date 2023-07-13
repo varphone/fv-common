@@ -527,6 +527,54 @@ typedef enum FvSeamParamOcId
     FV_SPA_OC_TRACKING_AREA,
     FV_SPA_OC_TRACKING_STRENGTH,
     FV_SPA_OC_TRACKING_DURATION,
+    FV_SPA_OC_12,
+    FV_SPA_OC_13,
+    FV_SPA_OC_14,
+    FV_SPA_OC_15,
+    FV_SPA_OC_16,
+    FV_SPA_OC_17,
+    FV_SPA_OC_18,
+    FV_SPA_OC_19,
+    FV_SPA_OC_20,
+    FV_SPA_OC_21,
+    FV_SPA_OC_22,
+    FV_SPA_OC_23,
+    FV_SPA_OC_24,
+    FV_SPA_OC_25,
+    FV_SPA_OC_26,
+    FV_SPA_OC_27,
+    FV_SPA_OC_28,
+    FV_SPA_OC_29,
+    FV_SPA_OC_30,
+    FV_SPA_OC_31,
+    FV_SPA_OC_32,
+    FV_SPA_OC_33,
+    FV_SPA_OC_34,
+    FV_SPA_OC_35,
+    FV_SPA_OC_36,
+    FV_SPA_OC_37,
+    FV_SPA_OC_38,
+    FV_SPA_OC_39,
+    FV_SPA_OC_40,
+    FV_SPA_OC_41,
+    FV_SPA_OC_42,
+    FV_SPA_OC_43,
+    FV_SPA_OC_44,
+    FV_SPA_OC_45,
+    FV_SPA_OC_46,
+    FV_SPA_OC_47,
+    FV_SPA_OC_48,
+    FV_SPA_OC_49,
+    FV_SPA_OC_50,
+    FV_SPA_OC_51,
+    FV_SPA_OC_52,
+    FV_SPA_OC_53,
+    FV_SPA_OC_54,
+    FV_SPA_OC_55,
+    FV_SPA_OC_56,
+    FV_SPA_OC_57,
+    FV_SPA_OC_58,
+    FV_SPA_OC_59,
 } FvSeamParamOcId;
 
 /// 一个代表接头识别参数 SF 区编号的枚举。
@@ -856,11 +904,13 @@ union FvSeamParamsV0
             std::array<FvSeamParamValue, FV_SPA_V0_XP_NUM>&>(parts.xp);
     }
 
+    /// 返回 XP 区参数常量引用。
     const FvSeamParamValue& xp(FvSeamParamXpId index) const
     {
         return parts.xp[index];
     }
 
+    /// 返回 XP 区参数可变引用。
     FvSeamParamValue& xp(FvSeamParamXpId index)
     {
         return parts.xp[index];
@@ -880,11 +930,13 @@ union FvSeamParamsV0
             std::array<FvSeamParamValue, FV_SPA_V0_KP_NUM>&>(parts.kp);
     }
 
+    /// 返回 KP 区参数常量引用。
     const FvSeamParamValue& kp(FvSeamParamKpId index) const
     {
         return parts.kp[index];
     }
 
+    /// 返回 KP 区参数可变引用。
     FvSeamParamValue& kp(FvSeamParamKpId index)
     {
         return parts.kp[index];
@@ -904,11 +956,13 @@ union FvSeamParamsV0
             std::array<FvSeamParamValue, FV_SPA_V0_OP_NUM>&>(parts.op);
     }
 
+    /// 返回 OP 区参数常量引用。
     const FvSeamParamValue& op(FvSeamParamOpId index) const
     {
         return parts.op[index];
     }
 
+    /// 返回 OP 区参数可变引用。
     FvSeamParamValue& op(FvSeamParamOpId index)
     {
         return parts.op[index];
@@ -928,11 +982,13 @@ union FvSeamParamsV0
             std::array<FvSeamParamValue, FV_SPA_V0_VP_NUM>&>(parts.vp);
     }
 
+    /// 返回 VP 区参数常量引用。
     const FvSeamParamValue& vp(FvSeamParamVpId index) const
     {
         return parts.vp[index];
     }
 
+    /// 返回 VP 区参数可变引用。
     FvSeamParamValue& vp(FvSeamParamVpId index)
     {
         return parts.vp[index];
@@ -952,11 +1008,13 @@ union FvSeamParamsV0
             std::array<FvSeamParamValue, FV_SPA_V0_OC_NUM>&>(parts.oc);
     }
 
+    /// 返回 OC 区参数常量引用。
     const FvSeamParamValue& oc(FvSeamParamOcId index) const
     {
         return parts.oc[index];
     }
 
+    /// 返回 OC 区参数可变引用。
     FvSeamParamValue& oc(FvSeamParamOcId index)
     {
         return parts.oc[index];
@@ -976,26 +1034,49 @@ union FvSeamParamsV0
             std::array<FvSeamParamValue, FV_SPA_V0_SF_NUM>&>(parts.sf);
     }
 
+    /// 返回 SF 区参数常量引用。
     const FvSeamParamValue& sf(FvSeamParamSfId index) const
     {
         return parts.sf[index];
     }
 
+    /// 返回 SF 区参数可变引用。
     FvSeamParamValue& sf(FvSeamParamSfId index)
     {
         return parts.sf[index];
     }
 
+    /// 返回 XP 区参数使能。
     bool xpEn(FvSeamParamXpId index)
     {
         return (parts.sf[FV_SPA_SF_XP_EN].i32 & (1 << index));
     }
 
+    /// 设置 XP 区参数使能。
+    void setXpEn(FvSeamParamXpId index, bool val)
+    {
+        if (val)
+            parts.sf[FV_SPA_SF_XP_EN].i32 |= (1 << index);
+        else
+            parts.sf[FV_SPA_SF_XP_EN].i32 &= ~(1 << index);
+    }
+
+    /// 返回 KP 区参数使能。
     bool kpEn(FvSeamParamKpId index)
     {
         return (parts.sf[FV_SPA_SF_KP_EN].i32 & (1 << index));
     }
 
+    /// 设置 KP 区参数使能。
+    void setKpEn(FvSeamParamKpId index, bool val)
+    {
+        if (val)
+            parts.sf[FV_SPA_SF_KP_EN].i32 |= (1 << index);
+        else
+            parts.sf[FV_SPA_SF_KP_EN].i32 &= ~(1 << index);
+    }
+
+    /// 返回 OP 区参数使能。
     bool opEn(FvSeamParamOpId index)
     {
         int64_t mask = parts.sf[FV_SPA_SF_OP_EN2].i32;
@@ -1004,6 +1085,21 @@ union FvSeamParamsV0
         return (mask & (1 << index));
     }
 
+    /// 返回 OP 区参数使能。
+    void setOpEn(FvSeamParamOpId index, bool val)
+    {
+        int64_t mask = parts.sf[FV_SPA_SF_OP_EN2].i32;
+        mask <<= 30;
+        mask |= parts.sf[FV_SPA_SF_OP_EN1].i32 & 0x3fffffff;
+        if (val)
+            mask |= (1 << index);
+        else
+            mask &= ~(1 << index);
+        parts.sf[FV_SPA_SF_OP_EN1].i32 = mask & 0x3fffffff;
+        parts.sf[FV_SPA_SF_OP_EN2].i32 = (mask >> 30) & 0x3fffffff;
+    }
+
+    /// 返回 VP 区参数使能。
     bool vpEn(FvSeamParamVpId index)
     {
         int64_t mask = parts.sf[FV_SPA_SF_VP_EN2].i32;
@@ -1012,6 +1108,21 @@ union FvSeamParamsV0
         return (mask & (1 << index));
     }
 
+    /// 设置 VP 区参数使能。
+    void setVpEn(FvSeamParamVpId index, bool val)
+    {
+        int64_t mask = parts.sf[FV_SPA_SF_VP_EN2].i32;
+        mask <<= 30;
+        mask |= parts.sf[FV_SPA_SF_VP_EN1].i32 & 0x3fffffff;
+        if (val)
+            mask |= (1 << index);
+        else
+            mask &= ~(1 << index);
+        parts.sf[FV_SPA_SF_VP_EN1].i32 = mask & 0x3fffffff;
+        parts.sf[FV_SPA_SF_VP_EN2].i32 = (mask >> 30) & 0x3fffffff;
+    }
+
+    /// 返回 OC 区参数使能。
     bool ocEn(FvSeamParamOcId index)
     {
         int64_t mask = parts.sf[FV_SPA_SF_OC_EN2].i32;
@@ -1020,10 +1131,30 @@ union FvSeamParamsV0
         return (mask & (1 << index));
     }
 
+    /// 设置 OC 区参数使能。
+    void setOcEn(FvSeamParamOcId index, bool val)
+    {
+        int64_t mask = parts.sf[FV_SPA_SF_OC_EN2].i32;
+        mask <<= 30;
+        mask |= parts.sf[FV_SPA_SF_OC_EN1].i32 & 0x3fffffff;
+        if (val)
+            mask |= (1 << index);
+        else
+            mask &= ~(1 << index);
+        parts.sf[FV_SPA_SF_OC_EN1].i32 = mask & 0x3fffffff;
+        parts.sf[FV_SPA_SF_OC_EN2].i32 = (mask >> 30) & 0x3fffffff;
+    }
+
     /// 返回接头形式值。
     int32_t jointType() const
     {
         return parts.sf[0].i32 & 0xffff;
+    }
+
+    /// 设置接头形式值。
+    void setJointType(int32_t val)
+    {
+        parts.sf[0].i32 = (parts.sf[0].i32 & 0xffff0000) | (val & 0xffff);
     }
 
     /// 返回接头主要形式值。
@@ -1032,16 +1163,34 @@ union FvSeamParamsV0
         return (parts.sf[0].i32 >> 8) & 0xff;
     }
 
+    /// 设置接头主要形式值。
+    void setJointTypeMajor(int32_t val)
+    {
+        parts.sf[0].i32 = (parts.sf[0].i32 & 0xffff00ff) | ((val & 0xff) << 8);
+    }
+
     /// 返回接头次要形式值。
     int32_t jointTypeMinor() const
     {
         return parts.sf[0].i32 & 0xff;
     }
 
+    /// 设置接头次要形式值。
+    void setJointTypeMinor(int32_t val)
+    {
+        parts.sf[0].i32 = (parts.sf[0].i32 & 0xffffff00) | (val & 0xff);
+    }
+
     /// 返回版本号。
     int32_t version() const
     {
         return parts.sf[9].i32 & 0xffff;
+    }
+
+    /// 设置版本号。
+    void setVersion(int32_t val)
+    {
+        parts.sf[9].i32 = (parts.sf[9].i32 & 0xffff0000) | (val & 0xffff);
     }
 #endif // __cplusplus
 };
