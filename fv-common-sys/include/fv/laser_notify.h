@@ -35,4 +35,25 @@ struct FvLaserNotify
     uint8_t extData[236];
 };
 
+/// 附加数据定义
+///
+/// - FV_LAS_MSG_AUTHOR_OVERRUN
+///   - NONE
+/// - FV_LAS_MSG_HW_FAULT
+///   - NONE
+/// - FV_LAS_MSG_LASER_OVERRUN
+///   - NONE
+/// - FV_LAS_MSG_OVERHEAT_RESUME
+///   - NONE
+/// - FV_LAS_MSG_OVERHEAT_SUSPEND
+///   - NONE
+/// - FV_LAS_MSG_TASK_ID_CHANGED
+///   - extData[0] = NEW_VAL
+///   - extData[1] = OLD_VAL
+///   - extData[2] = JOINT_TYPE_L
+///   - extData[3] = JOINT_TYPE_H
+/// - FV_LAS_MSG_LASER_TOGGLED
+///   - extData[0] = OFF/ON{0,1}
+///   - extData[1] = STRENGTH{0..=100}
+
 #endif // FV_LASER_NOTIFY_H
