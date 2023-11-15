@@ -11,7 +11,11 @@ use std::io::Write;
 use std::path::Path;
 use std::process::Command;
 use std::sync::atomic::{AtomicUsize, Ordering};
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
+#[cfg(not(feature = "async"))]
+use std::sync::Mutex;
+#[cfg(feature = "async")]
+use tokio::sync::Mutex;
 
 pub const SEAM_PROFILE_SCHEMA: &str = "https://full-v.com/schemas/seam-profile.json";
 pub const SEAM_PROFILES_SCHEMA: &str = "https://full-v.com/schemas/seam-profiles.json";
@@ -1984,26 +1988,34 @@ impl<'r> SeamProfilesMetaOnly<'r> {
     }
 }
 
+#[cfg(feature = "async")]
+macro_rules! get_spm {
+    () => {
+        SeamProfileManager::global().blocking_lock()
+    };
+}
+
+#[cfg(not(feature = "async"))]
+macro_rules! get_spm {
+    () => {
+        SeamProfileManager::global().lock().unwrap()
+    };
+}
+
 /// 返回当前生效的接头识别参数配置。
 /// # Safety
 #[no_mangle]
 pub unsafe extern "C" fn fv_spm_cur_profile() -> *mut FvSeamProfile {
-    if let Ok(ref mut mgr) = SeamProfileManager::global().lock() {
-        mgr.current_profile_ffi_mut_ptr()
-    } else {
-        std::ptr::null_mut()
-    }
+    let mut mgr = get_spm!();
+    mgr.current_profile_ffi_mut_ptr()
 }
 
 /// 返回当前生效的接头识别参数配置编号。
 /// # Safety
 #[no_mangle]
 pub unsafe extern "C" fn fv_spm_cur_profile_id() -> i32 {
-    if let Ok(ref mgr) = SeamProfileManager::global().lock() {
-        mgr.current_profile_id() as i32
-    } else {
-        -1
-    }
+    let mgr = get_spm!();
+    mgr.current_profile_id() as i32
 }
 
 /// 加载指定编号的接头识别参数配置。
@@ -2021,12 +2033,11 @@ pub unsafe extern "C" fn fv_spm_switch_profile(id: i32) -> i32 {
     if !(0..=255).contains(&id) {
         return -1;
     }
-    if let Ok(ref mut mgr) = SeamProfileManager::global().lock() {
-        mgr.set_current_profile_id(id as usize);
-        0
-    } else {
-        -1
-    }
+
+    let mut mgr = get_spm!();
+    mgr.set_current_profile_id(id as usize);
+
+    0
 }
 
 /// 设置当前生效的接头识别参数配置（以复制方式）。
@@ -2245,7 +2256,7 @@ mod tests {
 
     #[test]
     fn test_seam_profile_manager() {
-        let mut mgr = SeamProfileManager::new(DEFAULT_CONFIG_DIR);
+        let mut mgr = SeamProfileManager::new(DEFAULT_BACKUP_DIR, DEFAULT_CONFIG_DIR);
         mgr.load_all_profiles();
         mgr.save_all_profiles();
     }
