@@ -12,9 +12,9 @@ authors = ["Varphone Wong <varphone@qq.com>"]
 atomic-instant = "0.1"
 chrono = "0.4"
 fv-common-sys = { path = "fv-common-sys" }
-gst = { version = "0.21", package = "gstreamer" }
-gst-base = { version = "0.21", package = "gstreamer-base" }
-gst-video = { version = "0.21", package = "gstreamer-video" }
+gst = { version = "0.22", package = "gstreamer" }
+gst-base = { version = "0.22", package = "gstreamer-base" }
+gst-video = { version = "0.22", package = "gstreamer-video" }
 libc = "0.2"
 log = { version = "0.4", features = ["std"] }
 serde = { version = "1.0", features = ["derive","rc"] }
