@@ -46,7 +46,7 @@ pub trait Sysfs: Read + Write + Seek {
     }
 
     fn set_u32(&mut self, val: u32) -> Result<(), std::io::Error> {
-        self.set_string(&format!("{}", val))
+        self.set_string(format!("{}", val))
     }
 }
 
