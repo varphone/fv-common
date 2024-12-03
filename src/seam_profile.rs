@@ -11,9 +11,9 @@ use std::io::Write;
 use std::path::Path;
 use std::process::Command;
 use std::sync::atomic::{AtomicUsize, Ordering};
-use std::sync::Arc;
 #[cfg(not(feature = "async"))]
 use std::sync::Mutex;
+use std::sync::{Arc, LazyLock};
 #[cfg(feature = "async")]
 use tokio::sync::Mutex;
 
@@ -1492,7 +1492,12 @@ pub struct SeamProfileManager {
 unsafe impl Send for SeamProfileManager {}
 unsafe impl Sync for SeamProfileManager {}
 
-static mut SEAM_PROFILE_MANAGER: Option<Arc<Mutex<SeamProfileManager>>> = None;
+static SEAM_PROFILE_MANAGER: LazyLock<Arc<Mutex<SeamProfileManager>>> = LazyLock::new(|| {
+    Arc::new(Mutex::new(SeamProfileManager::new(
+        DEFAULT_BACKUP_DIR,
+        DEFAULT_CONFIG_DIR,
+    )))
+});
 
 impl SeamProfileManager {
     pub fn new<S: Into<String>>(backup_dir: S, config_dir: S) -> Self {
@@ -1530,18 +1535,7 @@ impl SeamProfileManager {
     }
 
     pub fn global<'r>() -> &'r Mutex<Self> {
-        use std::sync::Once;
-
-        static START: Once = Once::new();
-
-        START.call_once(|| unsafe {
-            SEAM_PROFILE_MANAGER = Some(Arc::new(Mutex::new(SeamProfileManager::new(
-                DEFAULT_BACKUP_DIR,
-                DEFAULT_CONFIG_DIR,
-            ))));
-        });
-
-        unsafe { SEAM_PROFILE_MANAGER.as_ref().unwrap() }
+        &SEAM_PROFILE_MANAGER
     }
 
     pub fn current_profile(&self) -> &SeamProfile {
@@ -1978,7 +1972,7 @@ pub struct SeamProfilesMetaOnly<'r> {
     pub profiles: Vec<SeamProfileMetaOnly<'r>>,
 }
 
-impl<'r> SeamProfilesMetaOnly<'r> {
+impl SeamProfilesMetaOnly<'_> {
     pub fn to_json_string(&self) -> String {
         serde_json::to_string(self).unwrap_or_default()
     }
