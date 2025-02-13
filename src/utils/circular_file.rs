@@ -72,9 +72,10 @@ mod tests {
 
     #[test]
     fn test_circular_file() {
-        let mut f = CircularFile::create("/tmp/.test_circular_file.raw", 1000000).unwrap();
+        let mut f = CircularFile::create(".test_circular_file.raw", 1000000).unwrap();
         for _ in 0..1000000 {
             f.circular_write_all(b"Hello, CircularFile\n").unwrap();
         }
+        std::fs::remove_file(".test_circular_file.raw").unwrap();
     }
 }

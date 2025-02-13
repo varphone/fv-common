@@ -12,16 +12,22 @@ authors = ["Varphone Wong <varphone@qq.com>"]
 atomic-instant = "0.1"
 chrono = "0.4"
 fv-common-sys = { path = "fv-common-sys" }
-gst = { version = "0.23", package = "gstreamer" }
-gst-base = { version = "0.23", package = "gstreamer-base" }
-gst-video = { version = "0.23", package = "gstreamer-video" }
-libc = "0.2"
 log = { version = "0.4", features = ["std"] }
 serde = { version = "1.0", features = ["derive","rc"] }
 serde_json = "1.0"
 sha2 = "0.10"
 tokio = { version = "1", features = ["sync"], optional = true }
 
+[target.'cfg(target_os = "linux")'.dependencies]
+libc = "0.2"
+gst = { version = "0.23", package = "gstreamer", optional = true }
+gst-base = { version = "0.23", package = "gstreamer-base", optional = true }
+gst-video = { version = "0.23", package = "gstreamer-video", optional = true }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+windows = { version = ">=0.52,<=0.59", features = ["Win32_System","Win32_System_Performance","Win32_System_SystemInformation"] }
+
 [features]
 default = []
 async = ["tokio"]
+gstreamer = ["dep:gst", "dep:gst-base", "dep:gst-video"]
